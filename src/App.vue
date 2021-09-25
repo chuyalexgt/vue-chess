@@ -3,7 +3,7 @@
     <v-card width="100vw" height="100vh" class="d-flex justify-center align-center">
       <ChessBoard />
     </v-card>
-    <v-btn @click="$addPiece(1, 1, 'white', 'Pawn')">click</v-btn>
+    <v-btn @click="startGame" v-if="showStartButton">Iniciar Partida</v-btn>
   </v-app>
 </template>
 
@@ -12,8 +12,13 @@ export default {
   name: "App",
 
   data: () => ({
-    //
+    showStartButton: true
   }),
-  methods: {},
+  methods: {
+    startGame (){
+      this.$bus.$emit("gameStart")
+      this.showStartButton = false
+    }
+  },
 };
 </script>

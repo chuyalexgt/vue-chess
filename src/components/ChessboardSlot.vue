@@ -6,32 +6,41 @@
     :color="colorCalculate"
   >
     <Bishop
-      v-if="this.$chessboardMatriz[rowIndex][colIndex].content === 'Bishop'"
-      :teamColor="this.$chessboardMatriz[rowIndex][colIndex].color"
+      v-if="cell.content === 'Bishop'"
+      :teamColor="cell.color"
+      :x="rowIndex"
+      :y="colIndex"
     />
     <King
-      v-if="this.$chessboardMatriz[rowIndex][colIndex].content === 'King'"
-      :teamColor="this.$chessboardMatriz[rowIndex][colIndex].color"
+      v-if="cell.content === 'King'"
+      :teamColor="cell.color"
+      :x="rowIndex"
+      :y="colIndex"
     />
     <Knight
-      v-if="this.$chessboardMatriz[rowIndex][colIndex].content === 'Knight'"
-      :teamColor="this.$chessboardMatriz[rowIndex][colIndex].color"
+      v-if="cell.content === 'Knight'"
+      :teamColor="cell.color"
+      :x="rowIndex"
+      :y="colIndex"
     />
     <Pawn
-      v-if="this.$chessboardMatriz[rowIndex][colIndex].content === 'Pawn'"
-      :teamColor="this.$chessboardMatriz[rowIndex][colIndex].color"
+      v-if="cell.content === 'Pawn'"
+      :teamColor="cell.color"
+      :x="rowIndex"
+      :y="colIndex"
     />
     <Queen
-      v-if="this.$chessboardMatriz[rowIndex][colIndex].content === 'Queen'"
-      :teamColor="this.$chessboardMatriz[rowIndex][colIndex].color"
+      v-if="cell.content === 'Queen'"
+      :teamColor="cell.color"
+      :x="rowIndex"
+      :y="colIndex"
     />
     <Rook
-      v-if="this.$chessboardMatriz[rowIndex][colIndex].content === 'Rook'"
-      :teamColor="this.$chessboardMatriz[rowIndex][colIndex].color"
+      v-if="cell.content === 'Rook'"
+      :teamColor="cell.color"
+      :x="rowIndex"
+      :y="colIndex"
     />
-    <!-- {{`${rowIndex} - ${colIndex}`}} -->
-
-    
   </v-card>
 </template>
 

@@ -5,8 +5,8 @@
 </template>
 
 <script>
-import black from "../Sprites/blackBishop.png"
-import white from "../Sprites/whiteBishop.png"
+import black from "../Sprites/blackBishop.png";
+import white from "../Sprites/whiteBishop.png";
 
 export default {
   name: "Bishop",
@@ -17,16 +17,26 @@ export default {
   props: {
     teamColor: {
       type: String,
-      require : true,
+      require: true,
+    },
+    x: {
+      type: Number,
+      require: true,
+    },
+    y: {
+      type: Number,
+      require: true,
     },
   },
-  methods: {},
-  computed:{
-    iconRender () {
-      if(this.teamColor == "black") return black
-      if(this.teamColor == "white") return white
-    }
-  }
+  methods: {
+    canMove() {},
+  },
+  computed: {
+    iconRender() {
+      if (this.teamColor == "black") return black;
+      if (this.teamColor == "white") return white;
+    },
+  },
 };
 </script>
 
