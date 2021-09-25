@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @click="pieceSelected">
     <v-img :src="iconRender" max-width="48px" max-height="48px"></v-img>
   </div>
 </template>
@@ -10,7 +10,6 @@ import white from "../Sprites/whiteBishop.png";
 
 export default {
   name: "Bishop",
-  created() {},
   data() {
     return {};
   },
@@ -27,8 +26,27 @@ export default {
       type: Number,
       require: true,
     },
+    contain: {
+      type: Object,
+      require: true,
+    },
+  },
+  created() {
+    this.$bus.$on("positionSelected", (data) => {
+      if ((data[3][0] != this.x) & (data[3][1] != this.y)) return;
+      if (data[2].color === this.teamColor) {
+        console.log("posicion no valida");
+        return;
+      }
+      console.log("posicion  valida");
+
+      this.$bus.$emit("disableSelection");
+    });
   },
   methods: {
+    pieceSelected() {
+      this.$bus.$emit("pieceSelected", [this.x, this.y]);
+    },
     canMove() {},
   },
   computed: {

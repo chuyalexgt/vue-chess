@@ -27,6 +27,10 @@ export default {
       type: Number,
       require: true,
     },
+    contain: {
+      type: Object,
+      require: true,
+    },
   },
   methods: {},
   computed: {

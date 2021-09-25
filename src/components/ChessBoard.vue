@@ -12,6 +12,7 @@
         :colIndex="index"
         :cell="cell"
         :rowIndex="index2"
+        
       />
     </v-card>
   </v-card>
@@ -20,7 +21,6 @@
 <script>
 export default {
   name: "ChessBoard",
-  created() {},
   data() {
     return {
       chessboardMatriz: Array(8)
@@ -38,26 +38,29 @@ export default {
         ),
     };
   },
-  created (){
-    this.$bus.$on("gameStart",()=>{
-      let initialPieces = this.$initialPieces
-      initialPieces.forEach(e => {
-        this.addPiece(e.row,e.col,e.color,e.piece)
+  created() {
+    this.$bus.$on("gameStart", () => {
+      let initialPieces = this.$initialPieces;
+      initialPieces.forEach((e) => {
+        this.addPiece(e.row, e.col, e.color, e.piece);
       });
-    })
+    });
   },
   props: {},
   methods: {
     addPiece(row, col, color, piece) {
-      this.chessboardMatriz[col].splice(row,1, Object.assign(
-        {},
-        {
-          content: piece,
-          color: color,
-        }
-      ));
+      this.chessboardMatriz[col].splice(
+        row,
+        1,
+        Object.assign(
+          {},
+          {
+            content: piece,
+            color: color,
+          }
+        )
+      );
     },
-
   },
 };
 </script>
