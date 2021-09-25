@@ -6,29 +6,32 @@
     :color="colorCalculate"
   >
     <Bishop
-      :teamColor="this.$chessboardMatriz[colIndex][rowIndex].color"
-      v-if="this.$chessboardMatriz[colIndex][rowIndex].content == 'Bishop'"
+      v-if="this.$chessboardMatriz[rowIndex][colIndex].content === 'Bishop'"
+      :teamColor="this.$chessboardMatriz[rowIndex][colIndex].color"
     />
     <King
-      :teamColor="black"
-      v-if="this.$chessboardMatriz[colIndex][rowIndex].content == 'King'"
+      v-if="this.$chessboardMatriz[rowIndex][colIndex].content === 'King'"
+      :teamColor="this.$chessboardMatriz[rowIndex][colIndex].color"
     />
     <Knight
-      :teamColor="black"
-      v-if="this.$chessboardMatriz[colIndex][rowIndex].content == 'Knight'"
+      v-if="this.$chessboardMatriz[rowIndex][colIndex].content === 'Knight'"
+      :teamColor="this.$chessboardMatriz[rowIndex][colIndex].color"
     />
     <Pawn
-      :teamColor="black"
-      v-if="this.$chessboardMatriz[colIndex][rowIndex].content == 'Pawn'"
+      v-if="this.$chessboardMatriz[rowIndex][colIndex].content === 'Pawn'"
+      :teamColor="this.$chessboardMatriz[rowIndex][colIndex].color"
     />
     <Queen
-      :teamColor="black"
-      v-if="this.$chessboardMatriz[colIndex][rowIndex].content == 'Queen'"
+      v-if="this.$chessboardMatriz[rowIndex][colIndex].content === 'Queen'"
+      :teamColor="this.$chessboardMatriz[rowIndex][colIndex].color"
     />
     <Rook
-      :teamColor="black"
-      v-if="this.$chessboardMatriz[colIndex][rowIndex].content == 'Rook'"
+      v-if="this.$chessboardMatriz[rowIndex][colIndex].content === 'Rook'"
+      :teamColor="this.$chessboardMatriz[rowIndex][colIndex].color"
     />
+    <!-- {{`${rowIndex} - ${colIndex}`}} -->
+
+    
   </v-card>
 </template>
 
@@ -40,16 +43,16 @@ export default {
     return {};
   },
   props: {
-    colIndex: Number,
-    cell: Object,
     rowIndex: Number,
+    cell: Object,
+    colIndex: Number,
   },
   methods: {},
   computed: {
     colorCalculate() {
       if (
-        (((this.colIndex + 1) % 2 == 0) & ((this.rowIndex + 1) % 2 != 0)) |
-        (((this.colIndex + 1) % 2 != 0) & ((this.rowIndex + 1) % 2 == 0))
+        (((this.rowIndex + 1) % 2 == 0) & ((this.colIndex + 1) % 2 != 0)) |
+        (((this.rowIndex + 1) % 2 != 0) & ((this.colIndex + 1) % 2 == 0))
       ) {
         return "grey darken-1";
       } else {

@@ -9,9 +9,9 @@
       <ChessboardSlot
         v-for="(cell, index2) in c"
         :key="index2"
-        :colIndex = "index2"
+        :colIndex = "index"
         :cell = "cell"
-        :rowIndex = "index"
+        :rowIndex = "index2"
       />
     </v-card>
   </v-card>
@@ -22,11 +22,15 @@ export default {
   name: "ChessBoard",
   created() {},
   data() {
-    return {};
+    return {
+
+    };
   },
   props: {},
-  methods: {},
-};
+  methods: {
+
+}
+}
 </script>
 
 <style lang="scss" scoped></style>
