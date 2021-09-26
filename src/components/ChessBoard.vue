@@ -40,7 +40,7 @@ export default {
       piecePosition: [],
       pieceData: {},
       positionToMove: [],
-      dataOfpositionToMove : {}
+      dataOfpositionToMove: {},
     };
   },
   created() {
@@ -60,28 +60,66 @@ export default {
     });
     this.$bus.$on("positionToMove", (data) => {
       this.positionToMove = data.position;
-      this.dataOfpositionToMove = data,data
+      (this.dataOfpositionToMove = data), data;
       this.$bus.$emit("positionsToMovePiece", {
         start: this.piecePosition,
         end: this.positionToMove,
         pieceData: this.pieceData,
-        positionData : this.dataOfpositionToMove
+        positionData: this.dataOfpositionToMove,
       });
     });
     this.$bus.$on("executeMovement", (data) => {
       this.chessboardMatriz[data.start[1]].splice(
         data.start[0],
         1,
-        Object.assign({}, {
-          content : "",
-          color : ""
-        })
+        Object.assign(
+          {},
+          {
+            content: "",
+            color: "",
+          }
+        )
       );
       this.chessboardMatriz[data.end[1]].splice(
         data.end[0],
         1,
         Object.assign({}, data.pieceData)
       );
+    });
+    this.$bus.$on("diagonalDontFly", (data) => {
+      let start = data.start;
+      let end = data.end;
+      let colission = false;
+      let stepLenght = Math.abs(start[0] - end[0]);
+      if ((start[0] <= end[0]) & (start[1] <= end[1])) {
+        //mov. en cuadrante 1
+        for (let i = 1; i <= stepLenght; i++) {
+          if (this.chessboardMatriz[start[1] + i][start[0] + i].content != "")
+            colission = true;
+        }
+      }
+      if ((start[0] >= end[0]) & (start[1] <= end[1])) {
+        //mov. en cuadrante 2
+        for (let i = 1; i <= stepLenght; i++) {
+          if (this.chessboardMatriz[start[1] + i][start[0] - i].content != "")
+            colission = true;
+        }
+      }
+      if ((start[0] >= end[0]) & (start[1] >= end[1])) {
+        //mov. en cuadrante 3
+        for (let i = 1; i <= stepLenght; i++) {
+          if (this.chessboardMatriz[start[1] - i][start[0] - i].content != "")
+            colission = true;
+        }
+      }
+      if ((start[0] <= end[0]) & (start[1] >= end[1])) {
+        //mov. en cuadrante 4
+        for (let i = 1; i <= stepLenght; i++) {
+          if (this.chessboardMatriz[start[1] - i][start[0] + i].content != "")
+            colission = true;
+        }
+      }
+      if (!colission) this.$bus.$emit("dontFly");
     });
   },
   props: {},

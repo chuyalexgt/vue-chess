@@ -66,7 +66,6 @@ export default {
   },
   methods: {
     movePiece() {
-      console.log(this.isPieceSelected);
       if (!this.isPieceSelected) {
         if (this.cell.content === "") return;
         this.$bus.$emit("piecePosition", {
