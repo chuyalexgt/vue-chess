@@ -10,7 +10,6 @@ import white from "../Sprites/whiteKnight.png";
 
 export default {
   name: "Knight",
-  created() {},
   data() {
     return {};
   },
@@ -27,12 +26,31 @@ export default {
       type: Number,
       require: true,
     },
-    contain: {
-      type: Object,
-      require: true,
+  },
+  created() {
+    this.$bus.$on("positionsToMovePiece", (data) => {
+      //movimiento de caballo
+      if ((data.start[0] == this.x) & (data.start[1] == this.y)) {
+        //Si es la ficha que seleccionaste...
+        this.knightMovement(data);
+      }
+    });
+  },
+  methods: {
+    knightMovement(data) {
+      let validation =
+        ((Math.abs(data.start[0] - data.end[0]) == 2) &
+          (Math.abs(data.start[1] - data.end[1]) == 1)) |
+        ((Math.abs(data.start[0] - data.end[0]) == 1) &
+          (Math.abs(data.start[1] - data.end[1]) == 2));
+      let dontKillFriends = data.pieceData.color != data.positionData.data.color;
+      if (validation & dontKillFriends) {
+        this.$bus.$emit("executeMovement", data);
+      } else {
+        this.$bus.$emit("invalidMovement");
+      }
     },
   },
-  methods: {},
   computed: {
     iconRender() {
       if (this.teamColor == "black") return black;

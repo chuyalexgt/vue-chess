@@ -4,14 +4,14 @@ chessboardDinamics.install = function(Vue) {
 
     Vue.prototype.$initialPieces = [
         //Blancas
-        // {row : 6,col : 0, color: "white", piece : "Pawn"},
-        // {row : 6,col : 1, color: "white", piece : "Pawn"},
-        // {row : 6,col : 2, color: "white", piece : "Pawn"},
-        // {row : 6,col : 3, color: "white", piece : "Pawn"},
-        // {row : 6,col : 4, color: "white", piece : "Pawn"},
-        // {row : 6,col : 5, color: "white", piece : "Pawn"},
-        // {row : 6,col : 6, color: "white", piece : "Pawn"},
-        // {row : 6,col : 7, color: "white", piece : "Pawn"},
+        {row : 6,col : 0, color: "white", piece : "Pawn"},
+        {row : 6,col : 1, color: "white", piece : "Pawn"},
+        {row : 6,col : 2, color: "white", piece : "Pawn"},
+        {row : 6,col : 3, color: "white", piece : "Pawn"},
+        {row : 6,col : 4, color: "white", piece : "Pawn"},
+        {row : 6,col : 5, color: "white", piece : "Pawn"},
+        {row : 6,col : 6, color: "white", piece : "Pawn"},
+        {row : 6,col : 7, color: "white", piece : "Pawn"},
         {row : 7,col : 0, color: "white", piece : "Rook"},
         {row : 7,col : 1, color: "white", piece : "Knight"},
         {row : 7,col : 2, color: "white", piece : "Bishop"},
