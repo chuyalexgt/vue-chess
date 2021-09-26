@@ -93,30 +93,38 @@ export default {
       let stepLenght = Math.abs(start[0] - end[0]);
       if ((start[0] <= end[0]) & (start[1] <= end[1])) {
         //mov. en cuadrante 1
-        for (let i = 1; i <= stepLenght; i++) {
-          if (this.chessboardMatriz[start[1] + i][start[0] + i].content != "")
+        for (let i = 1; i < stepLenght; i++) {
+          if (this.chessboardMatriz[start[1] + i][start[0] + i].content != "") {
+            console.log("me chocaron");
             colission = true;
+          }
         }
       }
       if ((start[0] >= end[0]) & (start[1] <= end[1])) {
         //mov. en cuadrante 2
-        for (let i = 1; i <= stepLenght; i++) {
-          if (this.chessboardMatriz[start[1] + i][start[0] - i].content != "")
+        for (let i = 1; i < stepLenght; i++) {
+          if (this.chessboardMatriz[start[1] + i][start[0] - i].content != "") {
+            console.log("me chocaron");
             colission = true;
+          }
         }
       }
       if ((start[0] >= end[0]) & (start[1] >= end[1])) {
         //mov. en cuadrante 3
-        for (let i = 1; i <= stepLenght; i++) {
-          if (this.chessboardMatriz[start[1] - i][start[0] - i].content != "")
+        for (let i = 1; i < stepLenght; i++) {
+          if (this.chessboardMatriz[start[1] - i][start[0] - i].content != "") {
+            console.log("me chocaron");
             colission = true;
+          }
         }
       }
       if ((start[0] <= end[0]) & (start[1] >= end[1])) {
         //mov. en cuadrante 4
-        for (let i = 1; i <= stepLenght; i++) {
-          if (this.chessboardMatriz[start[1] - i][start[0] + i].content != "")
+        for (let i = 1; i < stepLenght; i++) {
+          if (this.chessboardMatriz[start[1] - i][start[0] + i].content != "") {
+            console.log("me chocaron");
             colission = true;
+          }
         }
       }
       if (!colission) this.$bus.$emit("dontFly");
