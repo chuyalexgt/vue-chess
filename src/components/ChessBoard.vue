@@ -12,7 +12,7 @@
         :colIndex="index"
         :cell="cell"
         :rowIndex="index2"
-        
+        :isPieceSelected="isPieceSelected"
       />
     </v-card>
   </v-card>
@@ -36,6 +36,11 @@ export default {
             )
           )
         ),
+      isPieceSelected: false,
+      piecePosition: [],
+      pieceData: {},
+      positionToMove: [],
+      dataOfpositionToMove : {}
     };
   },
   created() {
@@ -44,6 +49,39 @@ export default {
       initialPieces.forEach((e) => {
         this.addPiece(e.row, e.col, e.color, e.piece);
       });
+    });
+    this.$bus.$on(
+      "switchSelection",
+      () => (this.isPieceSelected = !this.isPieceSelected)
+    );
+    this.$bus.$on("piecePosition", (data) => {
+      this.piecePosition = data.position;
+      this.pieceData = data.data;
+    });
+    this.$bus.$on("positionToMove", (data) => {
+      this.positionToMove = data.position;
+      this.dataOfpositionToMove = data,data
+      this.$bus.$emit("positionsToMovePiece", {
+        start: this.piecePosition,
+        end: this.positionToMove,
+        pieceData: this.pieceData,
+        positionData : this.dataOfpositionToMove
+      });
+    });
+    this.$bus.$on("executeMovement", (data) => {
+      this.chessboardMatriz[data.start[1]].splice(
+        data.start[0],
+        1,
+        Object.assign({}, {
+          content : "",
+          color : ""
+        })
+      );
+      this.chessboardMatriz[data.end[1]].splice(
+        data.end[0],
+        1,
+        Object.assign({}, data.pieceData)
+      );
     });
   },
   props: {},

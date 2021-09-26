@@ -1,6 +1,7 @@
 const chessboardDinamics = {};
 chessboardDinamics.install = function(Vue) {
     Vue.prototype.$bus = new Vue()
+
     Vue.prototype.$initialPieces = [
         //Blancas
         {row : 6,col : 0, color: "white", piece : "Pawn"},

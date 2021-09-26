@@ -1,5 +1,5 @@
 <template>
-  <div @click="pieceSelected">
+  <div>
     <v-img :src="iconRender" max-width="48px" max-height="48px"></v-img>
   </div>
 </template>
@@ -26,28 +26,27 @@ export default {
       type: Number,
       require: true,
     },
-    contain: {
-      type: Object,
-      require: true,
-    },
   },
   created() {
-    this.$bus.$on("positionSelected", (data) => {
-      if ((data[3][0] != this.x) & (data[3][1] != this.y)) return;
-      if (data[2].color === this.teamColor) {
-        console.log("posicion no valida");
-        return;
+    this.$bus.$on("positionsToMovePiece", (data) => {
+      //movimiento de arfil
+      if ((data.start[0] == this.x) & (data.start[1] == this.y)) {
+        //Si es la ficha que seleccionaste...
+        this.bishopMovement(data);
       }
-      console.log("posicion  valida");
-
-      this.$bus.$emit("disableSelection");
     });
   },
   methods: {
-    pieceSelected() {
-      this.$bus.$emit("pieceSelected", [this.x, this.y]);
+    bishopMovement(data) {
+      let validation =
+        Math.abs(data.start[0] - data.end[0]) === Math.abs(data.start[1] - data.end[1]);
+      let dontKillFriends = data.pieceData.color != data.positionData.data.color;
+      if (validation & dontKillFriends) {
+        this.$bus.$emit("executeMovement", data);
+      } else {
+        this.$bus.$emit("invalidMovement");
+      }
     },
-    canMove() {},
   },
   computed: {
     iconRender() {

@@ -4,7 +4,7 @@
     class="d-flex justify-center align-center"
     elevation="1"
     :color="colorCalculate"
-    @click="selectPositionToMove(rowIndex, colIndex, cell)"
+    @click="movePiece()"
   >
     <Bishop
       v-if="cell.content === 'Bishop'"
@@ -54,35 +54,35 @@
 <script>
 export default {
   name: "ChessboardSlot",
-  created() {
-    this.$bus.$on("pieceSelected", (data) => {
-      this.readyToSelect = true;
-      this.dataOfSelectedPiece = data;
-    });
-    this.$bus.$on("disableSelection",()=>{
-      this.readyToSelect = false
-    })
-  },
+  created() {},
   data() {
-    return {
-      readyToSelect: false,
-      dataOfSelectedPiece: [],
-    };
+    return {};
   },
   props: {
     rowIndex: Number,
     cell: Object,
     colIndex: Number,
+    isPieceSelected: Boolean,
   },
   methods: {
-    selectPositionToMove(row, col, cellData) {
-      if (!this.readyToSelect) return;
-      if (
-        (this.dataOfSelectedPiece[0] == this.rowIndex) &
-        (this.dataOfSelectedPiece[1] == this.colIndex)
-      )
+    movePiece() {
+      console.log(this.isPieceSelected);
+      if (!this.isPieceSelected) {
+        if (this.cell.content === "") return;
+        this.$bus.$emit("piecePosition", {
+          position: [this.rowIndex, this.colIndex],
+          data: this.cell,
+        });
+        this.$bus.$emit("switchSelection");
         return;
-      this.$bus.$emit("positionSelected", [col, row, cellData, this.dataOfSelectedPiece]);
+      }
+      if (this.isPieceSelected) {
+        this.$bus.$emit("positionToMove", {
+          position: [this.rowIndex, this.colIndex],
+          data: this.cell,
+        });
+        this.$bus.$emit("switchSelection");
+      }
     },
   },
   computed: {
