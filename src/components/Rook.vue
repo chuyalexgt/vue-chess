@@ -10,9 +10,10 @@ import white from "../Sprites/whiteRook.png";
 
 export default {
   name: "Rook",
-  created() {},
   data() {
-    return {};
+    return {
+      linearDontFlyValidation: false,
+    };
   },
   props: {
     teamColor: {
@@ -27,12 +28,35 @@ export default {
       type: Number,
       require: true,
     },
-    contain: {
-      type: Object,
-      require: true,
+  },
+  created() {
+    this.$bus.$on("dontFlyL", () => (this.linearDontFlyValidation = true));
+    this.$bus.$on("positionsToMovePiece", (data) => {
+      //movimiento de torre
+      if ((data.start[0] == this.x) & (data.start[1] == this.y)) {
+        //Si es la ficha que seleccionaste...
+        this.linearMovement(data);
+      }
+    });
+  },
+  methods: {
+    linearMovement(data) {
+      let validation =
+        ((data.start[0] != data.end[0]) & (data.start[1] == data.end[1])) |
+        ((data.start[0] == data.end[0]) & (data.start[1] != data.end[1]));
+      let dontKillFriends = data.pieceData.color != data.positionData.color;
+      console.log(this.linearDontFlyValidation)
+      if (validation & dontKillFriends) {
+        this.$bus.$emit("linearDontFly", data); ///validacion para que no salte otras piezas
+        if (this.linearDontFlyValidation) {
+          this.linearDontFlyValidation = false;
+          this.$bus.$emit("executeMovement", data);
+        }
+      } else {
+        this.$bus.$emit("invalidMovement");
+      }
     },
   },
-  methods: {},
   computed: {
     iconRender() {
       if (this.teamColor == "black") return black;

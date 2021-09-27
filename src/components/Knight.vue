@@ -43,7 +43,7 @@ export default {
           (Math.abs(data.start[1] - data.end[1]) == 1)) |
         ((Math.abs(data.start[0] - data.end[0]) == 1) &
           (Math.abs(data.start[1] - data.end[1]) == 2));
-      let dontKillFriends = data.pieceData.color != data.positionData.data.color;
+      let dontKillFriends = data.pieceData.color != data.positionData.color;
       if (validation & dontKillFriends) {
         this.$bus.$emit("executeMovement", data);
       } else {

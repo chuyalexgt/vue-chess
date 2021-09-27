@@ -30,8 +30,8 @@ export default {
     },
   },
   created() {
+    this.$bus.$on("dontFlyD", () => (this.diagonalDontFlyValidation = true)); //?
     this.$bus.$on("positionsToMovePiece", (data) => {
-      this.$bus.$on("dontFly", () => this.diagonalDontFlyValidation = true)
       //movimiento de arfil
       if ((data.start[0] == this.x) & (data.start[1] == this.y)) {
         //Si es la ficha que seleccionaste...
@@ -43,12 +43,17 @@ export default {
     diagonalMovement(data) {
       let validation =
         Math.abs(data.start[0] - data.end[0]) === Math.abs(data.start[1] - data.end[1]);
-      let dontKillFriends = data.pieceData.color != data.positionData.data.color;
+      let dontKillFriends = data.pieceData.color != data.positionData.color;
       if (validation & dontKillFriends) {
         this.$bus.$emit("diagonalDontFly", data); ///validacion para que no salte otras piezas
-        if (this.diagonalDontFlyValidation) this.$bus.$emit("executeMovement", data);
+        if (this.diagonalDontFlyValidation) {
+          this.diagonalDontFlyValidation = false
+          this.$bus.$emit("executeMovement", data);
+          console.log("mov. valido")
+        }
       } else {
         this.$bus.$emit("invalidMovement");
+        console.log("mov. invalido")
       }
     },
   },
