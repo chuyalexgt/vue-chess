@@ -17,7 +17,7 @@ export default {
   methods: {
     startGame (){
       this.$bus.$emit("gameStart")
-      this.showStartButton = false
+      // this.showStartButton = false 
     }
   },
 };

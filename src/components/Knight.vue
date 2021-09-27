@@ -28,7 +28,7 @@ export default {
     },
   },
   created() {
-    this.$bus.$on("positionsToMovePiece", (data) => {
+    this.$bus.$on("positionsToMoveKnight", (data) => {
       //movimiento de caballo
       if ((data.start[0] == this.x) & (data.start[1] == this.y)) {
         //Si es la ficha que seleccionaste...

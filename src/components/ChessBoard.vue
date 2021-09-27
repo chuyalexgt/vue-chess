@@ -13,6 +13,7 @@
         :cell="cell"
         :rowIndex="index2"
         :isPieceSelected="isPieceSelected"
+        :chessboardMatriz="chessboardMatriz"
       />
     </v-card>
   </v-card>
@@ -23,7 +24,7 @@ export default {
   name: "ChessBoard",
   data() {
     return {
-      chessboardMatriz: Array(8)             ///Formato [col][row]
+      chessboardMatriz: Array(8) ///Formato [col][row]
         .fill(null)
         .map(() =>
           Array(8).fill(
@@ -45,8 +46,20 @@ export default {
   },
   created() {
     this.$bus.$on("gameStart", () => {
-      let initialPieces = this.$initialPieces;
-      initialPieces.forEach((e) => {
+      this.chessboardMatriz = Array(8)
+        .fill(null)
+        .map(() =>
+          Array(8).fill(
+            Object.assign(
+              {},
+              {
+                content: "",
+                color: "",
+              }
+            )
+          )
+        );
+      this.$initialPieces.forEach((e) => {
         this.addPiece(e.row, e.col, e.color, e.piece);
       });
     });
@@ -60,13 +73,27 @@ export default {
     });
     this.$bus.$on("positionToMove", (data) => {
       this.positionToMove = data.position;
-      (this.dataOfpositionToMove = data.data);
-      this.$bus.$emit("positionsToMovePiece", {
+      this.dataOfpositionToMove = data.data;
+      this.isPieceSelected = false;
+      let dataToSend = {
         start: this.piecePosition,
         end: this.positionToMove,
         pieceData: this.pieceData,
         positionData: this.dataOfpositionToMove,
-      });
+      };
+      //se envia por difierentes eventos para no saturar el eventbus
+      if (this.pieceData.content == "Bishop")
+        this.$bus.$emit("positionsToMoveBishop", dataToSend);
+      if (this.pieceData.content == "Knight")
+        this.$bus.$emit("positionsToMoveKnight", dataToSend);
+      if (this.pieceData.content == "Queen")
+        this.$bus.$emit("positionsToMoveQueen", dataToSend);
+      if (this.pieceData.content == "Rook")
+        this.$bus.$emit("positionsToMoveRook", dataToSend);
+      if (this.pieceData.content == "King")
+        this.$bus.$emit("positionsToMoveKing", dataToSend);
+      if (this.pieceData.content == "Pawn")
+        this.$bus.$emit("positionsToMovePawn", dataToSend);
     });
     this.$bus.$on("executeMovement", (data) => {
       this.chessboardMatriz[data.start[1]].splice(
@@ -83,88 +110,18 @@ export default {
       this.chessboardMatriz[data.end[1]].splice(
         data.end[0],
         1,
-        Object.assign({}, data.pieceData)
+        Object.assign(
+          {},
+          {
+            content: data.pieceData.content,
+            color: data.pieceData.color,
+          }
+        )
       );
-    });
-    this.$bus.$on("diagonalDontFly", (data) => {
-      let start = data.start;
-      let end = data.end;
-      let colission = false;
-      let stepLenght = Math.abs(start[0] - end[0]);
-      if ((start[0] <= end[0]) & (start[1] <= end[1])) {
-        //mov. en cuadrante 1
-        for (let i = 1; i < stepLenght; i++) {
-          if (this.chessboardMatriz[start[1] + i][start[0] + i].content != "") {
-            colission = true;
-          }
-        }
-      }
-      if ((start[0] >= end[0]) & (start[1] <= end[1])) {
-        //mov. en cuadrante 2
-        for (let i = 1; i < stepLenght; i++) {
-          if (this.chessboardMatriz[start[1] + i][start[0] - i].content != "") {
-            colission = true;
-          }
-        }
-      }
-      if ((start[0] >= end[0]) & (start[1] >= end[1])) {
-        //mov. en cuadrante 3
-        for (let i = 1; i < stepLenght; i++) {
-          if (this.chessboardMatriz[start[1] - i][start[0] - i].content != "") {
-            colission = true;
-          }
-        }
-      }
-      if ((start[0] <= end[0]) & (start[1] >= end[1])) {
-        //mov. en cuadrante 4
-        for (let i = 1; i < stepLenght; i++) {
-          if (this.chessboardMatriz[start[1] - i][start[0] + i].content != "") {
-            colission = true;
-          }
-        }
-      }
-      if (!colission) this.$bus.$emit("dontFlyD");
-    });
-    this.$bus.$on("linearDontFly", (data) => {
-      let start = data.start;
-      let end = data.end;
-      let colission = false;
-      let xdiferential = Math.abs(start[0] - end [0])
-      let ydiferential = Math.abs(start[1] - end [1])
-
-      if ((start[0] <= end[0]) & (start[1] == end[1])) {
-        //mov. en x
-        for (let i = 1; i < xdiferential; i++) {
-          if (this.chessboardMatriz[start[1]][start[0] + i].content != "") {
-            colission = true;
-          }
-        }
-      }
-      if ((start[0] == end[0]) & (start[1] <= end[1])) {
-        //mov. en y
-        for (let i = 1; i < ydiferential; i++) {
-          if (this.chessboardMatriz[start[1] + i][start[0]].content != "") {
-            colission = true;
-          }
-        }
-      }
-      if ((start[0] >= end[0]) & (start[1] == end[1])) {
-        //mov. en -x
-        for (let i = 1; i < xdiferential; i++) {
-          if (this.chessboardMatriz[start[1]][start[0] - i].content != "") {
-            colission = true;
-          }
-        }
-      }
-      if ((start[0] == end[0]) & (start[1] >= end[1])) {
-        //mov. en -y
-        for (let i = 1; i < ydiferential; i++) {
-          if (this.chessboardMatriz[start[1] - i][start[0]].content != "") {
-            colission = true;
-          }
-        }
-      }
-      if (!colission) this.$bus.$emit("dontFlyL");
+      this.piecePosition = [];
+      this.pieceData = {};
+      this.positionToMove = [];
+      this.dataOfpositionToMove = {};
     });
   },
   props: {},

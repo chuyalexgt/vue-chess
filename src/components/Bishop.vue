@@ -28,12 +28,18 @@ export default {
       type: Number,
       require: true,
     },
+    chessboardMatriz: {
+      type: Array,
+      require: true,
+    },
   },
   created() {
-    this.$bus.$on("dontFlyD", () => (this.diagonalDontFlyValidation = true)); //?
-    this.$bus.$on("positionsToMovePiece", (data) => {
+    this.$bus.$on("positionsToMoveBishop", (data) => {
       //movimiento de arfil
       if ((data.start[0] == this.x) & (data.start[1] == this.y)) {
+        console.log("arfil");
+        console.log(this.chessboardMatriz);
+
         //Si es la ficha que seleccionaste...
         this.diagonalMovement(data);
       }
@@ -44,17 +50,58 @@ export default {
       let validation =
         Math.abs(data.start[0] - data.end[0]) === Math.abs(data.start[1] - data.end[1]);
       let dontKillFriends = data.pieceData.color != data.positionData.color;
-      if (validation & dontKillFriends) {
-        this.$bus.$emit("diagonalDontFly", data); ///validacion para que no salte otras piezas
-        if (this.diagonalDontFlyValidation) {
-          this.diagonalDontFlyValidation = false
-          this.$bus.$emit("executeMovement", data);
-          console.log("mov. valido")
-        }
+      this.diagonalDontFlyValidation = this.diagonalDontFly(data); ///validacion para que no salte otras piezas
+      if (validation & dontKillFriends & this.diagonalDontFlyValidation) {
+        this.diagonalDontFlyValidation = false;
+
+        this.$bus.$emit("executeMovement", data);
+
+        console.log("mov. valido");
       } else {
         this.$bus.$emit("invalidMovement");
-        console.log("mov. invalido")
+
+        console.log("mov. invalido");
       }
+    },
+    diagonalDontFly(data) {
+      let start = data.start;
+      let end = data.end;
+      let colission = false;
+      let stepLenght = Math.abs(start[0] - end[0]);
+      if ((start[0] <= end[0]) & (start[1] <= end[1])) {
+        //mov. en cuadrante 1
+        for (let i = 1; i < stepLenght; i++) {
+          if (this.chessboardMatriz[start[1] + i][start[0] + i].content != "") {
+            colission = true;
+          }
+        }
+      }
+      if ((start[0] >= end[0]) & (start[1] <= end[1])) {
+        //mov. en cuadrante 2
+        for (let i = 1; i < stepLenght; i++) {
+          if (this.chessboardMatriz[start[1] + i][start[0] - i].content != "") {
+            colission = true;
+          }
+        }
+      }
+      if ((start[0] >= end[0]) & (start[1] >= end[1])) {
+        //mov. en cuadrante 3
+        for (let i = 1; i < stepLenght; i++) {
+          if (this.chessboardMatriz[start[1] - i][start[0] - i].content != "") {
+            colission = true;
+          }
+        }
+      }
+      if ((start[0] <= end[0]) & (start[1] >= end[1])) {
+        //mov. en cuadrante 4
+        for (let i = 1; i < stepLenght; i++) {
+          if (this.chessboardMatriz[start[1] - i][start[0] + i].content != "") {
+            colission = true;
+          }
+        }
+      }
+      if (!colission) return true;
+      else return false;
     },
   },
   computed: {

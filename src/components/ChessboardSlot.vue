@@ -12,6 +12,7 @@
       :x="rowIndex"
       :y="colIndex"
       :contain="cell"
+      :chessboardMatriz="chessboardMatriz"
     />
     <King
       v-if="cell.content === 'King'"
@@ -19,6 +20,7 @@
       :x="rowIndex"
       :y="colIndex"
       :contain="cell"
+      :chessboardMatriz="chessboardMatriz"
     />
     <Knight
       v-if="cell.content === 'Knight'"
@@ -26,6 +28,7 @@
       :x="rowIndex"
       :y="colIndex"
       :contain="cell"
+      :chessboardMatriz="chessboardMatriz"
     />
     <Pawn
       v-if="cell.content === 'Pawn'"
@@ -33,6 +36,7 @@
       :x="rowIndex"
       :y="colIndex"
       :contain="cell"
+      :chessboardMatriz="chessboardMatriz"
     />
     <Queen
       v-if="cell.content === 'Queen'"
@@ -40,6 +44,7 @@
       :x="rowIndex"
       :y="colIndex"
       :contain="cell"
+      :chessboardMatriz="chessboardMatriz"
     />
     <Rook
       v-if="cell.content === 'Rook'"
@@ -47,6 +52,7 @@
       :x="rowIndex"
       :y="colIndex"
       :contain="cell"
+      :chessboardMatriz="chessboardMatriz"
     />
   </v-card>
 </template>
@@ -63,6 +69,7 @@ export default {
     cell: Object,
     colIndex: Number,
     isPieceSelected: Boolean,
+    chessboardMatriz: Array,
   },
   methods: {
     movePiece() {
@@ -72,7 +79,9 @@ export default {
           position: [this.rowIndex, this.colIndex],
           data: this.cell,
         });
+
         this.$bus.$emit("switchSelection");
+
         return;
       }
       if (this.isPieceSelected) {
@@ -80,7 +89,6 @@ export default {
           position: [this.rowIndex, this.colIndex],
           data: this.cell,
         });
-        this.$bus.$emit("switchSelection");
       }
     },
   },
