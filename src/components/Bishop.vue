@@ -55,12 +55,8 @@ export default {
         this.diagonalDontFlyValidation = false;
 
         this.$bus.$emit("executeMovement", data);
-
-        console.log("mov. valido");
       } else {
         this.$bus.$emit("invalidMovement");
-
-        console.log("mov. invalido");
       }
     },
     diagonalDontFly(data) {

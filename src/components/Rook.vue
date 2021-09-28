@@ -34,7 +34,7 @@ export default {
     },
   },
   created() {
-    this.$bus.$on("positionsToMovePiece", (data) => {
+    this.$bus.$on("positionsToMoveRook", (data) => {
       //movimiento de torre
       if ((data.start[0] == this.x) & (data.start[1] == this.y)) {
         //Si es la ficha que seleccionaste...
@@ -52,10 +52,8 @@ export default {
       if (validation & dontKillFriends & this.linearDontFlyValidation) {
         this.linearDontFlyValidation = false;
         this.$bus.$emit("executeMovement", data);
-        console.log("mov. valido");
       } else {
         this.$bus.$emit("invalidMovement");
-        console.log("mov. invalido");
       }
     },
     linearDontFly(data) {
