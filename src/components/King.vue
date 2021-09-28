@@ -54,8 +54,7 @@ export default {
           (Math.abs(data.start[1] - data.end[1]) === 1));
       let dontKillFriends = data.pieceData.color != data.positionData.color;
       if (diagonalValidation) {
-        this.diagonalDontFlyValidation = this.diagonalDontFly(data); ///validacion para que no salte otras piezas
-        if (diagonalValidation & dontKillFriends & this.diagonalDontFlyValidation) {
+        if (diagonalValidation & dontKillFriends) {
           this.diagonalDontFlyValidation = false;
           this.$bus.$emit("executeMovement", data);
         } else {
@@ -63,97 +62,13 @@ export default {
         }
       }
       if (linearValidation) {
-        this.linearDontFlyValidation = this.linearDontFly(data); ///validacion para que no salte otras piezas
-        if (linearValidation & dontKillFriends & this.linearDontFlyValidation) {
+        if (linearValidation & dontKillFriends) {
           this.linearDontFlyValidation = false;
           this.$bus.$emit("executeMovement", data);
         } else {
           this.$bus.$emit("invalidMovement");
         }
       }
-    },
-
-    diagonalDontFly(data) {
-      let start = data.start;
-      let end = data.end;
-      let colission = false;
-      let stepLenght = Math.abs(start[0] - end[0]);
-      if ((start[0] <= end[0]) & (start[1] <= end[1])) {
-        //mov. en cuadrante 1
-        for (let i = 1; i < stepLenght; i++) {
-          if (this.chessboardMatriz[start[1] + i][start[0] + i].content != "") {
-            colission = true;
-          }
-        }
-      }
-      if ((start[0] >= end[0]) & (start[1] <= end[1])) {
-        //mov. en cuadrante 2
-        for (let i = 1; i < stepLenght; i++) {
-          if (this.chessboardMatriz[start[1] + i][start[0] - i].content != "") {
-            colission = true;
-          }
-        }
-      }
-      if ((start[0] >= end[0]) & (start[1] >= end[1])) {
-        //mov. en cuadrante 3
-        for (let i = 1; i < stepLenght; i++) {
-          if (this.chessboardMatriz[start[1] - i][start[0] - i].content != "") {
-            colission = true;
-          }
-        }
-      }
-      if ((start[0] <= end[0]) & (start[1] >= end[1])) {
-        //mov. en cuadrante 4
-        for (let i = 1; i < stepLenght; i++) {
-          if (this.chessboardMatriz[start[1] - i][start[0] + i].content != "") {
-            colission = true;
-          }
-        }
-      }
-      if (!colission) return true;
-      else return false;
-    },
-    linearDontFly(data) {
-      let start = data.start;
-      let end = data.end;
-      let colission = false;
-      let xdiferential = Math.abs(start[0] - end[0]);
-      let ydiferential = Math.abs(start[1] - end[1]);
-
-      if ((start[0] <= end[0]) & (start[1] == end[1])) {
-        //mov. en x
-        for (let i = 1; i < xdiferential; i++) {
-          if (this.chessboardMatriz[start[1]][start[0] + i].content != "") {
-            colission = true;
-          }
-        }
-      }
-      if ((start[0] == end[0]) & (start[1] <= end[1])) {
-        //mov. en y
-        for (let i = 1; i < ydiferential; i++) {
-          if (this.chessboardMatriz[start[1] + i][start[0]].content != "") {
-            colission = true;
-          }
-        }
-      }
-      if ((start[0] >= end[0]) & (start[1] == end[1])) {
-        //mov. en -x
-        for (let i = 1; i < xdiferential; i++) {
-          if (this.chessboardMatriz[start[1]][start[0] - i].content != "") {
-            colission = true;
-          }
-        }
-      }
-      if ((start[0] == end[0]) & (start[1] >= end[1])) {
-        //mov. en -y
-        for (let i = 1; i < ydiferential; i++) {
-          if (this.chessboardMatriz[start[1] - i][start[0]].content != "") {
-            colission = true;
-          }
-        }
-      }
-      if (!colission) return true;
-      else return false;
     },
   },
   computed: {
