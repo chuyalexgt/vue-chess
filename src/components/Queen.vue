@@ -36,7 +36,7 @@ export default {
   },
   created() {
     this.$bus.$on("positionsToMoveQueen", (data) => {
-      //movimiento de arfil
+      //movimiento de reina
       if ((data.start[0] == this.x) & (data.start[1] == this.y)) {
         //Si es la ficha que seleccionaste...
         this.queenMovement(data);

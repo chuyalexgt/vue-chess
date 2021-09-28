@@ -10,7 +10,6 @@ import white from "../Sprites/whiteKing.png";
 
 export default {
   name: "King",
-  created() {},
   data() {
     return {};
   },
@@ -27,12 +26,136 @@ export default {
       type: Number,
       require: true,
     },
-    contain: {
-      type: Object,
+    chessboardMatriz: {
+      type: Array,
       require: true,
     },
   },
-  methods: {},
+  created() {
+    this.$bus.$on("positionsToMoveKing", (data) => {
+      //movimiento de Rey
+      if ((data.start[0] == this.x) & (data.start[1] == this.y)) {
+        //Si es la ficha que seleccionaste...
+        this.kingMovement(data);
+      }
+    });
+  },
+  methods: {
+    kingMovement(data) {
+      let diagonalValidation =
+        (Math.abs(data.start[0] - data.end[0]) === 1) &
+        (Math.abs(data.start[1] - data.end[1]) === 1);
+      let linearValidation =
+        ((data.start[0] != data.end[0]) &
+          (data.start[1] == data.end[1]) &
+          (Math.abs(data.start[0] - data.end[0]) === 1)) |
+        ((data.start[0] == data.end[0]) &
+          (data.start[1] != data.end[1]) &
+          (Math.abs(data.start[1] - data.end[1]) === 1));
+      let dontKillFriends = data.pieceData.color != data.positionData.color;
+      if (diagonalValidation) {
+        this.diagonalDontFlyValidation = this.diagonalDontFly(data); ///validacion para que no salte otras piezas
+        if (diagonalValidation & dontKillFriends & this.diagonalDontFlyValidation) {
+          this.diagonalDontFlyValidation = false;
+          this.$bus.$emit("executeMovement", data);
+        } else {
+          this.$bus.$emit("invalidMovement");
+        }
+      }
+      if (linearValidation) {
+        this.linearDontFlyValidation = this.linearDontFly(data); ///validacion para que no salte otras piezas
+        if (linearValidation & dontKillFriends & this.linearDontFlyValidation) {
+          this.linearDontFlyValidation = false;
+          this.$bus.$emit("executeMovement", data);
+        } else {
+          this.$bus.$emit("invalidMovement");
+        }
+      }
+    },
+
+    diagonalDontFly(data) {
+      let start = data.start;
+      let end = data.end;
+      let colission = false;
+      let stepLenght = Math.abs(start[0] - end[0]);
+      if ((start[0] <= end[0]) & (start[1] <= end[1])) {
+        //mov. en cuadrante 1
+        for (let i = 1; i < stepLenght; i++) {
+          if (this.chessboardMatriz[start[1] + i][start[0] + i].content != "") {
+            colission = true;
+          }
+        }
+      }
+      if ((start[0] >= end[0]) & (start[1] <= end[1])) {
+        //mov. en cuadrante 2
+        for (let i = 1; i < stepLenght; i++) {
+          if (this.chessboardMatriz[start[1] + i][start[0] - i].content != "") {
+            colission = true;
+          }
+        }
+      }
+      if ((start[0] >= end[0]) & (start[1] >= end[1])) {
+        //mov. en cuadrante 3
+        for (let i = 1; i < stepLenght; i++) {
+          if (this.chessboardMatriz[start[1] - i][start[0] - i].content != "") {
+            colission = true;
+          }
+        }
+      }
+      if ((start[0] <= end[0]) & (start[1] >= end[1])) {
+        //mov. en cuadrante 4
+        for (let i = 1; i < stepLenght; i++) {
+          if (this.chessboardMatriz[start[1] - i][start[0] + i].content != "") {
+            colission = true;
+          }
+        }
+      }
+      if (!colission) return true;
+      else return false;
+    },
+    linearDontFly(data) {
+      let start = data.start;
+      let end = data.end;
+      let colission = false;
+      let xdiferential = Math.abs(start[0] - end[0]);
+      let ydiferential = Math.abs(start[1] - end[1]);
+
+      if ((start[0] <= end[0]) & (start[1] == end[1])) {
+        //mov. en x
+        for (let i = 1; i < xdiferential; i++) {
+          if (this.chessboardMatriz[start[1]][start[0] + i].content != "") {
+            colission = true;
+          }
+        }
+      }
+      if ((start[0] == end[0]) & (start[1] <= end[1])) {
+        //mov. en y
+        for (let i = 1; i < ydiferential; i++) {
+          if (this.chessboardMatriz[start[1] + i][start[0]].content != "") {
+            colission = true;
+          }
+        }
+      }
+      if ((start[0] >= end[0]) & (start[1] == end[1])) {
+        //mov. en -x
+        for (let i = 1; i < xdiferential; i++) {
+          if (this.chessboardMatriz[start[1]][start[0] - i].content != "") {
+            colission = true;
+          }
+        }
+      }
+      if ((start[0] == end[0]) & (start[1] >= end[1])) {
+        //mov. en -y
+        for (let i = 1; i < ydiferential; i++) {
+          if (this.chessboardMatriz[start[1] - i][start[0]].content != "") {
+            colission = true;
+          }
+        }
+      }
+      if (!colission) return true;
+      else return false;
+    },
+  },
   computed: {
     iconRender() {
       if (this.teamColor == "black") return black;
