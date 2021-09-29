@@ -44,19 +44,24 @@ export default {
     pawnMovement(data) {
       // [x][y]
       let diagonalValidation =
-        (Math.abs(data.start[0] - data.end[0]) === 1) &       //Solo se mueve en diagonal si es una casilla
-        (Math.abs(data.start[1] - data.end[1]) === 1) &       
-        this.canAttack();                                     //y hay una ficha enemiga en la posicion 
+        (Math.abs(data.start[0] - data.end[0]) === 1) & //Solo se mueve en diagonal si es una casilla
+        (Math.abs(data.start[1] - data.end[1]) === 1) &
+        this.canAttack(); //y hay una ficha enemiga en la posicion
       let linearValidation =
-        (data.start[1] == data.end[1]) &                      //No sea un movimiento vertical
-        (data.start[0] != data.end[0]) &                      //sea un movimiento horizontal
-        this.isFirstMovement(data) &                          // solo se mueva 1 casilla (o 2 si es el primer movimiento)
-        this.canMove(data) &                                  // Solo sea un movimietno hacia el frente
-        (data.positionData.color == "");                      //si se mueve hacia el frente no puede atacar
+        (data.start[1] == data.end[1]) & //No sea un movimiento vertical
+        (data.start[0] != data.end[0]) & //sea un movimiento horizontal
+        this.isFirstMovement(data) & // solo se mueva 1 casilla (o 2 si es el primer movimiento)
+        this.canMove(data) & // Solo sea un movimietno hacia el frente
+        (data.positionData.color == ""); //si se mueve hacia el frente no puede atacar
       let dontKillFriends = data.pieceData.color != data.positionData.color;
       if (diagonalValidation) {
         if (diagonalValidation & dontKillFriends) {
           this.$bus.$emit("executeMovement", data);
+          if (
+            ((data.end[0] == 0) & (this.teamColor == "white")) |
+            ((data.end[0] == 7) & (this.teamColor == "black"))
+          )
+            this.$bus.$emit("coronation", [data.end[0], data.end[1]]);
         } else {
           this.$bus.$emit("invalidMovement");
         }
@@ -64,6 +69,11 @@ export default {
       if (linearValidation) {
         if (linearValidation & dontKillFriends) {
           this.$bus.$emit("executeMovement", data);
+          if (
+            ((data.end[0] == 0) & (this.teamColor == "white")) |
+            ((data.end[0] == 7) & (this.teamColor == "black"))
+          )
+            this.$bus.$emit("coronation", [data.end[0], data.end[1]]);
         } else {
           this.$bus.$emit("invalidMovement");
         }

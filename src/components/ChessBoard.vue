@@ -1,21 +1,85 @@
 <template>
-  <v-card
-    width="40vw"
-    height="40vw"
-    color="brown lighten-4"
-    class="d-flex justify-space-around"
-  >
-    <v-card v-for="(c, index) in this.chessboardMatriz" :key="index" width="12.5%">
-      <ChessboardSlot
-        v-for="(cell, index2) in c"
-        :key="index2"
-        :colIndex="index"
-        :cell="cell"
-        :rowIndex="index2"
-        :isPieceSelected="isPieceSelected"
-        :chessboardMatriz="chessboardMatriz"
-      />
+  <v-card class="d-flex justify-center align-center">
+    <v-card
+      width="40vw"
+      height="40vw"
+      color="brown lighten-4"
+      class="d-flex justify-space-around"
+    >
+      <v-card v-for="(c, index) in this.chessboardMatriz" :key="index" width="12.5%">
+        <ChessboardSlot
+          v-for="(cell, index2) in c"
+          :key="index2"
+          :colIndex="index"
+          :cell="cell"
+          :rowIndex="index2"
+          :isPieceSelected="isPieceSelected"
+          :chessboardMatriz="chessboardMatriz"
+        />
+      </v-card>
     </v-card>
+    <v-dialog transition="dialog-bottom-transition" :value="coronationDialog" persistent>
+      <v-card color="brown lighten-5">
+        <v-toolbar color="brown darken-1" dark class="">
+          <p class="dialog-title pt-4 pl-3">Coronacion</p>
+        </v-toolbar>
+        <v-card-text>
+          <p class="dialog-text py-5 px-4 text-center">
+            Seleciona una pieza para mejorar a tu peon
+          </p>
+          <v-row justify="center">
+            <v-col cols="6" md="3">
+              <button class="dialog-button">
+                <v-card
+                  elevation="3"
+                  class="mx-5 my-2 d-flex justify-center align-center flex-column"
+                  @click="coronationDialog = false"
+                >
+                  <v-icon size="3rem" class="pa-4">mdi-chess-bishop</v-icon>
+                  <p>Arfil</p>
+                </v-card>
+              </button>
+            </v-col>
+            <v-col cols="6" md="3">
+              <button class="dialog-button">
+                <v-card
+                  elevation="3"
+                  class="mx-5 my-2 d-flex justify-center align-center flex-column"
+                  @click="coronationDialog = false"
+                >
+                  <v-icon size="3rem" class="pa-4">mdi-chess-queen</v-icon>
+                  <p>Reina</p>
+                </v-card>
+              </button>
+            </v-col>
+            <v-col cols="6" md="3">
+              <button class="dialog-button">
+                <v-card
+                  elevation="3"
+                  class="mx-5 my-2 d-flex justify-center align-center flex-column"
+                  @click="coronationDialog = false"
+                >
+                  <v-icon size="3rem" class="pa-4">mdi-chess-rook</v-icon>
+                  <p>Torre</p>
+                </v-card>
+              </button>
+            </v-col>
+            <v-col cols="6" md="3">
+              <button class="dialog-button">
+                <v-card
+                  elevation="3"
+                  class="mx-5 my-2 d-flex justify-center align-center flex-column"
+                  @click="coronationDialog = false"
+                >
+                  <v-icon size="3rem" class="pa-4">mdi-chess-knight</v-icon>
+                  <p>Caballo</p>
+                </v-card>
+              </button>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
@@ -42,6 +106,9 @@ export default {
       pieceData: {},
       positionToMove: [],
       dataOfpositionToMove: {},
+      coronationDialog: false,
+      coronationSelection: "",
+      coronationPosition: [],
     };
   },
   created() {
@@ -123,6 +190,11 @@ export default {
       this.positionToMove = [];
       this.dataOfpositionToMove = {};
     });
+    this.$bus.$on("coronation", (data) => {
+      this.coronationPosition = data;
+      this.coronationDialog = true;
+      // this.chessboardMatriz[data[1]][data[0]].content = this.coronationSelection;
+    });
   },
   props: {},
   methods: {
@@ -139,8 +211,31 @@ export default {
         )
       );
     },
+    executeCoronation() {},
+  },
+  computed: {
+    teamIconRender() {
+      console.log(this.blackTeam);
+      console.log(this.whiteTeam);
+      if (this.teamIconColor == "black") return blackTeam;
+      if (this.teamIconColor == "white") return whiteTeam;
+    },
   },
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.dialog-title {
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  font-size: calc(1.2rem + 4px);
+  letter-spacing: 1.5px;
+}
+.dialog-text {
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+
+  font-size: calc(0.8rem + 4px);
+}
+.dialog-button{
+  width: 100%;
+}
+</style>
