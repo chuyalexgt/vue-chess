@@ -29,11 +29,10 @@
           </p>
           <v-row justify="center">
             <v-col cols="6" md="3">
-              <button class="dialog-button">
+              <button class="dialog-button" @click="executeCoronation('Bishop')">
                 <v-card
                   elevation="3"
                   class="mx-5 my-2 d-flex justify-center align-center flex-column"
-                  @click="coronationDialog = false"
                 >
                   <v-icon size="3rem" class="pa-4">mdi-chess-bishop</v-icon>
                   <p>Arfil</p>
@@ -41,11 +40,10 @@
               </button>
             </v-col>
             <v-col cols="6" md="3">
-              <button class="dialog-button">
+              <button class="dialog-button" @click="executeCoronation('Queen')">
                 <v-card
                   elevation="3"
                   class="mx-5 my-2 d-flex justify-center align-center flex-column"
-                  @click="coronationDialog = false"
                 >
                   <v-icon size="3rem" class="pa-4">mdi-chess-queen</v-icon>
                   <p>Reina</p>
@@ -53,11 +51,10 @@
               </button>
             </v-col>
             <v-col cols="6" md="3">
-              <button class="dialog-button">
+              <button class="dialog-button" @click="executeCoronation('Rook')">
                 <v-card
                   elevation="3"
                   class="mx-5 my-2 d-flex justify-center align-center flex-column"
-                  @click="coronationDialog = false"
                 >
                   <v-icon size="3rem" class="pa-4">mdi-chess-rook</v-icon>
                   <p>Torre</p>
@@ -65,11 +62,10 @@
               </button>
             </v-col>
             <v-col cols="6" md="3">
-              <button class="dialog-button">
+              <button class="dialog-button" @click="executeCoronation('Knight')">
                 <v-card
                   elevation="3"
                   class="mx-5 my-2 d-flex justify-center align-center flex-column"
-                  @click="coronationDialog = false"
                 >
                   <v-icon size="3rem" class="pa-4">mdi-chess-knight</v-icon>
                   <p>Caballo</p>
@@ -211,7 +207,20 @@ export default {
         )
       );
     },
-    executeCoronation() {},
+    executeCoronation(selection) {
+      this.coronationDialog = false;
+      this.chessboardMatriz[this.coronationPosition[1]][
+        this.coronationPosition[1]
+      ].content = selection;
+      this.chessboardMatriz[this.coronationPosition[1]].unshift(
+        this.chessboardMatriz[this.coronationPosition[1]].shift()
+      );
+      console.log(
+        this.chessboardMatriz[this.coronationPosition[1]][this.coronationPosition[1]]
+          .content
+      );
+      console.log(selection);
+    },
   },
   computed: {
     teamIconRender() {
@@ -235,7 +244,7 @@ export default {
 
   font-size: calc(0.8rem + 4px);
 }
-.dialog-button{
+.dialog-button {
   width: 100%;
 }
 </style>
