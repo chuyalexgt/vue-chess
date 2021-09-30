@@ -1,8 +1,8 @@
 <template>
   <v-card class="d-flex justify-center align-center">
     <v-card
-      width="40vw"
-      height="40vw"
+      :width="width"
+      :height="height"
       color="brown lighten-4"
       class="d-flex justify-space-around"
     >
@@ -209,8 +209,9 @@ export default {
     },
     executeCoronation(selection) {
       this.coronationDialog = false;
+      console.log(this.coronationPosition);
       this.chessboardMatriz[this.coronationPosition[1]][
-        this.coronationPosition[1]
+        this.coronationPosition[0]
       ].content = selection;
       this.chessboardMatriz[this.coronationPosition[1]].unshift(
         this.chessboardMatriz[this.coronationPosition[1]].shift()
@@ -220,14 +221,37 @@ export default {
           .content
       );
       console.log(selection);
+      console.log(this.chessboardMatriz[this.coronationPosition[1]]);
     },
   },
   computed: {
-    teamIconRender() {
-      console.log(this.blackTeam);
-      console.log(this.whiteTeam);
-      if (this.teamIconColor == "black") return blackTeam;
-      if (this.teamIconColor == "white") return whiteTeam;
+    width() {
+      switch (this.$vuetify.breakpoint.name) {
+        case "xs":
+          return "95vw";
+        case "sm":
+          return "60vw";
+        case "md":
+          return "40vw";
+        case "lg":
+          return "40vw";
+        case "xl":
+          return "40vw";
+      }
+    },
+    height() {
+      switch (this.$vuetify.breakpoint.name) {
+        case "xs":
+          return "95vw";
+        case "sm":
+          return "60vw";
+        case "md":
+          return "40vw";
+        case "lg":
+          return "40vw";
+        case "xl":
+          return "40vw";
+      }
     },
   },
 };
