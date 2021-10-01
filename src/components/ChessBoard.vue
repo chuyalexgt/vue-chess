@@ -15,7 +15,7 @@
           :rowIndex="index2"
           :isPieceSelected="isPieceSelected"
           :chessboardMatriz="chessboardMatriz"
-          :turnState = "turnState"
+          :turnState="turnState"
         />
       </v-card>
     </v-card>
@@ -85,7 +85,7 @@ export default {
   name: "ChessBoard",
   data() {
     return {
-      turnState : true,
+      turnState: true,
       chessboardMatriz: Array(8) ///Formato [col][row]
         .fill(null)
         .map(() =>
@@ -187,7 +187,8 @@ export default {
       this.pieceData = {};
       this.positionToMove = [];
       this.dataOfpositionToMove = {};
-      this.turnState = !this.turnState
+      this.turnState = !this.turnState;
+      this.anyKingIsDead()
     });
     this.$bus.$on("coronation", (data) => {
       this.coronationPosition = data;
@@ -219,12 +220,26 @@ export default {
       this.chessboardMatriz[this.coronationPosition[1]].unshift(
         this.chessboardMatriz[this.coronationPosition[1]].shift()
       );
-      console.log(
-        this.chessboardMatriz[this.coronationPosition[1]][this.coronationPosition[1]]
-          .content
-      );
-      console.log(selection);
-      console.log(this.chessboardMatriz[this.coronationPosition[1]]);
+    },
+    anyKingIsDead() {
+      //comprobar si el rey blanco sigue vivo
+      let val = this.chessboardMatriz
+      let whiteKingIsAlive = val.some((e) => {
+        return e.some((cell) => {
+          return (cell.content == "King") & (cell.color == "white");
+        });
+      });
+      //comprobar si el rey negro sigue vivo
+      let blackKingIsAlive = val.some((e) => {
+        return e.some((cell) => {
+          return (cell.content == "King") & (cell.color == "black");
+        });
+      });
+      whiteKingIsAlive ? null : this.gameOver("white");
+      blackKingIsAlive ? null : this.gameOver("black");
+    },
+    gameOver(looser) {
+      console.log(looser);
     },
   },
   computed: {
