@@ -82,7 +82,6 @@ export default {
       }
     },
     canAttack() {
-      console.log(this.x, this.y);
       if (this.teamColor == "white") {
         if (this.y == 0) {
           return this.chessboardMatriz[this.y + 1][this.x - 1].color == "black"

@@ -11,6 +11,7 @@
             max-width="280"
             class="ma-10"
           />
+          <PlayerTurnIndicator />
         </v-card-text>
         <v-card-actions class="d-flex justify-center align-center">
           <v-btn

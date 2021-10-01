@@ -70,10 +70,13 @@ export default {
     colIndex: Number,
     isPieceSelected: Boolean,
     chessboardMatriz: Array,
+    turnState: Boolean,
   },
   methods: {
     movePiece() {
       if (!this.isPieceSelected) {
+        if (this.turnState & (this.cell.color == "black")) return;
+        if (!this.turnState & (this.cell.color == "white")) return;
         if (this.cell.content === "") return;
         this.$bus.$emit("piecePosition", {
           position: [this.rowIndex, this.colIndex],

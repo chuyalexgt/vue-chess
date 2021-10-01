@@ -2,7 +2,7 @@
   <v-card class="d-flex justify-center align-center">
     <v-card
       :width="width"
-      :height="height"
+      :height="width"
       color="brown lighten-4"
       class="d-flex justify-space-around"
     >
@@ -15,6 +15,7 @@
           :rowIndex="index2"
           :isPieceSelected="isPieceSelected"
           :chessboardMatriz="chessboardMatriz"
+          :turnState = "turnState"
         />
       </v-card>
     </v-card>
@@ -84,6 +85,7 @@ export default {
   name: "ChessBoard",
   data() {
     return {
+      turnState : true,
       chessboardMatriz: Array(8) ///Formato [col][row]
         .fill(null)
         .map(() =>
@@ -185,6 +187,7 @@ export default {
       this.pieceData = {};
       this.positionToMove = [];
       this.dataOfpositionToMove = {};
+      this.turnState = !this.turnState
     });
     this.$bus.$on("coronation", (data) => {
       this.coronationPosition = data;
@@ -226,20 +229,6 @@ export default {
   },
   computed: {
     width() {
-      switch (this.$vuetify.breakpoint.name) {
-        case "xs":
-          return "95vw";
-        case "sm":
-          return "60vw";
-        case "md":
-          return "40vw";
-        case "lg":
-          return "40vw";
-        case "xl":
-          return "40vw";
-      }
-    },
-    height() {
       switch (this.$vuetify.breakpoint.name) {
         case "xs":
           return "95vw";

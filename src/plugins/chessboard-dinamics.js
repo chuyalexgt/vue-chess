@@ -1,4 +1,5 @@
 const chessboardDinamics = {};
+
 chessboardDinamics.install = function(Vue) {
     Vue.prototype.$bus = new Vue()
 
@@ -38,5 +39,7 @@ chessboardDinamics.install = function(Vue) {
         {row : 0,col : 6, color: "black", piece : "Knight"},
         {row : 0,col : 7, color: "black", piece : "Rook"},
     ]
+
+
 };
 export default chessboardDinamics;
