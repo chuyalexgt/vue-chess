@@ -111,6 +111,7 @@ export default {
   },
   created() {
     this.$bus.$on("gameStart", () => {
+      this.turnState = true;
       this.chessboardMatriz = Array(8)
         .fill(null)
         .map(() =>
@@ -187,8 +188,9 @@ export default {
       this.pieceData = {};
       this.positionToMove = [];
       this.dataOfpositionToMove = {};
+      console.log(this.turnState);
       this.turnState = !this.turnState;
-      this.anyKingIsDead()
+      console.log(this.turnState);
     });
     this.$bus.$on("coronation", (data) => {
       this.coronationPosition = data;
@@ -197,6 +199,25 @@ export default {
     });
   },
   props: {},
+  watch: {
+    chessboardMatriz: {
+      handler(val) {
+        //comprobar si el rey blanco sigue vivo
+        let whiteKingIsAlive = val.some((e) => {
+          return e.some((cell) => {
+            return (cell.content == "King") & (cell.color == "white");
+          });
+        });
+        let blackKingIsAlive = val.some((e) => {
+          return e.some((cell) => {
+            return (cell.content == "King") & (cell.color == "black");
+          });
+        });
+        whiteKingIsAlive ? null : this.gameOver("white");
+        blackKingIsAlive ? null : this.gameOver("black");
+      },
+    },
+  },
   methods: {
     addPiece(row, col, color, piece) {
       this.chessboardMatriz[col].splice(
@@ -221,25 +242,9 @@ export default {
         this.chessboardMatriz[this.coronationPosition[1]].shift()
       );
     },
-    anyKingIsDead() {
-      //comprobar si el rey blanco sigue vivo
-      let val = this.chessboardMatriz
-      let whiteKingIsAlive = val.some((e) => {
-        return e.some((cell) => {
-          return (cell.content == "King") & (cell.color == "white");
-        });
-      });
-      //comprobar si el rey negro sigue vivo
-      let blackKingIsAlive = val.some((e) => {
-        return e.some((cell) => {
-          return (cell.content == "King") & (cell.color == "black");
-        });
-      });
-      whiteKingIsAlive ? null : this.gameOver("white");
-      blackKingIsAlive ? null : this.gameOver("black");
-    },
     gameOver(looser) {
-      console.log(looser);
+      this.coronationDialog = false;
+      this.$bus.$emit("showWinner", looser);
     },
   },
   computed: {

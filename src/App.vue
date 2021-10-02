@@ -1,8 +1,13 @@
 <template>
   <v-app>
-    <v-dialog :value="showStartMenu" persistent fullscreen>
+    <v-dialog :value="dialogState" persistent fullscreen>
       <v-card color="brown lighten-4">
-        <v-toolbar color="brown darken-1" elevation="10"></v-toolbar>
+        <v-toolbar color="brown darken-1" elevation="10" v-if="showStartMenu" dark
+          >Menu Inicial</v-toolbar
+        >
+        <v-toolbar color="brown darken-1" elevation="10" v-if="showGameOver" dark
+          >Partida Finalizada</v-toolbar
+        >
         <v-card-text class="d-flex justify-center align-center flex-column">
           <v-img
             :src="mainMenu"
@@ -11,6 +16,7 @@
             max-width="280"
             class="ma-10"
           />
+          <p class="font-weight-black subtitle-1" v-if="showGameOver">El Jugador {{winner}} ha ganado la partida</p>
           <PlayerTurnIndicator />
         </v-card-text>
         <v-card-actions class="d-flex justify-center align-center">
@@ -52,13 +58,26 @@ export default {
 
   data: () => ({
     showStartMenu: true,
+    showGameOver: false,
+    dialogState: true,
+    winner : "",
     mainMenu,
   }),
   methods: {
     startGame() {
       this.$bus.$emit("gameStart");
       this.showStartMenu = false;
+      this.showGameOver = false;
+      this.dialogState = false;
     },
+  },
+  created() {
+    this.$bus.$on("showWinner", (looser) => {
+      this.showGameOver = true;
+      this.dialogState = true;
+      (looser == "black")? this.winner = "1":null
+      (looser == "white")? this.winner = "2":null
+    });
   },
 };
 </script>
