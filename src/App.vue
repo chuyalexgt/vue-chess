@@ -16,7 +16,9 @@
             max-width="280"
             class="ma-10"
           />
-          <p class="font-weight-black subtitle-1" v-if="showGameOver">El Jugador {{winner}} ha ganado la partida</p>
+          <p class="font-weight-black subtitle-1" v-if="showGameOver">
+            El Jugador {{ winner }} ha ganado la partida
+          </p>
           <PlayerTurnIndicator />
         </v-card-text>
         <v-card-actions class="d-flex justify-center align-center">
@@ -38,6 +40,7 @@
       class="d-flex flex-column justify-center align-center my-5"
     >
       <ChessBoard />
+      <v-alert type="error" v-if="invalidMovement">Movimiento invalido</v-alert>
       <v-btn
         @click="startGame"
         class="my-10"
@@ -60,8 +63,9 @@ export default {
     showStartMenu: true,
     showGameOver: false,
     dialogState: true,
-    winner : "",
+    winner: "",
     mainMenu,
+    invalidMovement: false,
   }),
   methods: {
     startGame() {
@@ -75,8 +79,15 @@ export default {
     this.$bus.$on("showWinner", (looser) => {
       this.showGameOver = true;
       this.dialogState = true;
-      (looser == "black")? this.winner = "1":null
-      (looser == "white")? this.winner = "2":null
+      looser == "black"
+        ? (this.winner = "1")
+        : null(looser == "white")
+        ? (this.winner = "2")
+        : null;
+    });
+    this.$bus.$on("invalidMovement", () => {
+      this.invalidMovement = true
+      setTimeout(()=>this.invalidMovement = false,2000)
     });
   },
 };
