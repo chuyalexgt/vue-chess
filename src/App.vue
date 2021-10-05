@@ -43,8 +43,12 @@
         <v-col class="mx-10">
           <v-banner class="text-center">
             TURNO
-            <v-chip color="white" class="px-5 my-1 elevation-10" v-if="turnState">Jugador 1</v-chip>
-            <v-chip color="black" dark class="px-5 my-1 elevation-10" v-if="!turnState">Jugador 2</v-chip>
+            <v-chip color="white" class="px-5 my-1 elevation-10" v-if="turnState"
+              >Jugador 1</v-chip
+            >
+            <v-chip color="black" dark class="px-5 my-1 elevation-10" v-if="!turnState"
+              >Jugador 2</v-chip
+            >
           </v-banner>
         </v-col>
         <v-col class="mx-10" align-self="center">
@@ -57,6 +61,9 @@
       <ChessBoard />
       <v-alert type="error" class="my-3 alert-position" v-if="invalidMovement"
         >Movimiento invalido</v-alert
+      >
+      <v-alert type="error" class="my-3 alert-position" v-if="wrongTurn"
+        >Aun no es tu turno</v-alert
       >
       <v-btn
         @click="startGame"
@@ -83,9 +90,10 @@ export default {
     winner: "",
     mainMenu,
     invalidMovement: false,
+    wrongTurn: false,
     minutes: 0,
     seconds: 0,
-    turnState : true
+    turnState: true,
   }),
   computed: {
     secondsS() {
@@ -119,9 +127,9 @@ export default {
     },
   },
   created() {
-      this.$bus.$on("playerTurn",(data)=>{
-        this.turnState = data
-      })
+    this.$bus.$on("playerTurn", (data) => {
+      this.turnState = data;
+    });
     ///////////////////////////////////////////////////////////
     this.timer();
     this.$bus.$on("showWinner", (looser) => {
@@ -135,7 +143,11 @@ export default {
     });
     this.$bus.$on("invalidMovement", () => {
       this.invalidMovement = true;
-      setTimeout(() => (this.invalidMovement = false), 1500);
+      setTimeout(() => (this.invalidMovement = false), 1000);
+    });
+    this.$bus.$on("wrongTurnIndicator", () => {
+      this.wrongTurn = true;
+      setTimeout(() => (this.wrongTurn = false), 1500);
     });
   },
 };
