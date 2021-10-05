@@ -75,15 +75,15 @@ export default {
   methods: {
     movePiece() {
       if (!this.isPieceSelected) {
-        if (this.turnState & (this.cell.color == "black")) return;
-        if (!this.turnState & (this.cell.color == "white")) return;
-        if (this.cell.content === "") return;
+        if (this.turnState & (this.cell.color == "black")) return;    //si es el turno de blancas y se quiere mover una negra no lo permite
+        if (!this.turnState & (this.cell.color == "white")) return;   //mismo caso con el turno de las negras
+        if (this.cell.content === "") return;   //Evita el movimiento de una celda sin pieza
         this.$bus.$emit("piecePosition", {
           position: [this.rowIndex, this.colIndex],
           data: this.cell,
         });
 
-        this.$bus.$emit("switchSelection");
+        this.$bus.$emit("switchSelection");    //cambia estado de isPieceSelected
 
         return;
       }

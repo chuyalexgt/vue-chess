@@ -39,11 +39,11 @@
       color="rgba(0,0,0,0)"
       class="d-flex flex-column justify-center align-center"
     >
-      <v-chip outlined class="px-5 my-3 | font-weight-black" color="brown darken-3"
+      <v-chip outlined class="px-5 my-1 | font-weight-black" color="brown darken-3"
         ><v-icon left>mdi-clock</v-icon>{{ minutesS + ":" + secondsS }}</v-chip
       >
       <ChessBoard />
-      <v-alert type="error" v-if="invalidMovement">Movimiento invalido</v-alert>
+      <v-alert type="error" class="my-3 alert-position" v-if="invalidMovement">Movimiento invalido</v-alert>
       <v-btn
         @click="startGame"
         class="my-10"
@@ -117,7 +117,7 @@ export default {
     });
     this.$bus.$on("invalidMovement", () => {
       this.invalidMovement = true;
-      setTimeout(() => (this.invalidMovement = false), 2000);
+      setTimeout(() => (this.invalidMovement = false), 1500);
     });
   },
 };
@@ -125,5 +125,11 @@ export default {
 <style lang="scss">
 #app {
   background: url(./assets/wooden-background.png) repeat center center fixed;
+}
+.alert-position{
+  position: absolute;
+  bottom: 40%;
+
+
 }
 </style>

@@ -77,8 +77,6 @@ export default {
         } else {
           this.$bus.$emit("invalidMovement");
         }
-      } else {
-        this.$bus.$emit("invalidMovement");
       }
     },
     canAttack() {

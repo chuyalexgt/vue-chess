@@ -189,7 +189,11 @@ export default {
       this.positionToMove = [];
       this.dataOfpositionToMove = {};
       console.log(this.turnState);
-      this.turnState = !this.turnState;
+      data.pieceData.color == "white" //swicheo los turnos asi para evitar que se repitan
+        ? (this.turnState = false)
+        : data.pieceData.color == "black"
+        ? (this.turnState = true)
+        : null;
       console.log(this.turnState);
     });
     this.$bus.$on("coronation", (data) => {
