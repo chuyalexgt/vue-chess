@@ -37,8 +37,11 @@
     <v-card
       flat
       color="rgba(0,0,0,0)"
-      class="d-flex flex-column justify-center align-center my-5"
+      class="d-flex flex-column justify-center align-center"
     >
+      <v-chip outlined class="px-5 my-3 | font-weight-black" color="brown darken-3"
+        ><v-icon left>mdi-clock</v-icon>{{ minutesS + ":" + secondsS }}</v-chip
+      >
       <ChessBoard />
       <v-alert type="error" v-if="invalidMovement">Movimiento invalido</v-alert>
       <v-btn
@@ -66,16 +69,43 @@ export default {
     winner: "",
     mainMenu,
     invalidMovement: false,
+    minutes: 0,
+    seconds: 0,
   }),
+  computed: {
+    secondsS() {
+      if (this.seconds < 10) return "0" + `${this.seconds}`;
+      return `${this.seconds}`;
+    },
+    minutesS() {
+      if (this.minutes < 10) return "0" + `${this.minutes}`;
+      return `${this.minutes}`;
+    },
+  },
   methods: {
     startGame() {
       this.$bus.$emit("gameStart");
       this.showStartMenu = false;
       this.showGameOver = false;
       this.dialogState = false;
+      this.seconds = 0;
+      this.minutes = 0;
+    },
+    timer() {
+      if (this.seconds + 1 == 60) {
+        this.minutes++;
+        this.seconds = 0;
+      } else {
+        this.seconds++;
+      }
+      setTimeout(() => {
+        this.timer();
+      }, 1000);
     },
   },
   created() {
+    ///////////////////////////////////////////////////////////
+    this.timer();
     this.$bus.$on("showWinner", (looser) => {
       this.showGameOver = true;
       this.dialogState = true;
@@ -86,14 +116,14 @@ export default {
         : null;
     });
     this.$bus.$on("invalidMovement", () => {
-      this.invalidMovement = true
-      setTimeout(()=>this.invalidMovement = false,2000)
+      this.invalidMovement = true;
+      setTimeout(() => (this.invalidMovement = false), 2000);
     });
   },
 };
 </script>
 <style lang="scss">
 #app {
-  background: url(./assets/wooden-background.png) no-repeat center center fixed;
+  background: url(./assets/wooden-background.png) repeat center center fixed;
 }
 </style>
