@@ -112,19 +112,14 @@ export default {
   mounted() {
     this.$bus.$on("gameStart", () => {
       this.turnState = true;
-      this.chessboardMatriz = Array(8)
-        .fill(null)
-        .map(() =>
-          Array(8).fill(
-            Object.assign(
-              {},
-              {
-                content: "",
-                color: "",
-              }
-            )
-          )
-        );
+      this.chessboardMatriz = this.chessboardMatriz.map((e) => {
+        e = e.map((cell) => {
+          cell.content = "";
+          cell.color = "";
+          return cell;
+        });
+        return e;
+      });
       this.$initialPieces.forEach((e) => {
         this.addPiece(e.row, e.col, e.color, e.piece);
       });

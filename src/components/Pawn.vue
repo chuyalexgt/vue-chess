@@ -40,6 +40,7 @@ export default {
       }
     });
   },
+
   methods: {
     pawnMovement(data) {
       // [x][y]
