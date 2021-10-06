@@ -46,7 +46,7 @@ export default {
       let diagonalValidation =
         (Math.abs(data.start[0] - data.end[0]) === 1) & //Solo se mueve en diagonal si es una casilla
         (Math.abs(data.start[1] - data.end[1]) === 1) &
-        this.canAttack(); //y hay una ficha enemiga en la posicion
+        this.canAttack(data); //y hay una ficha enemiga en la posicion
       let linearValidation =
         (data.start[1] == data.end[1]) & //No sea un movimiento vertical
         (data.start[0] != data.end[0]) & //sea un movimiento horizontal
@@ -62,6 +62,7 @@ export default {
             ((data.end[0] == 7) & (this.teamColor == "black"))
           )
             this.$bus.$emit("coronation", [data.end[0], data.end[1]]);
+          return;
         } else {
           this.$bus.$emit("invalidMovement");
         }
@@ -77,40 +78,58 @@ export default {
         } else {
           this.$bus.$emit("invalidMovement");
         }
-      }
+      } else this.$bus.$emit("invalidMovement");
     },
-    canAttack() {
+    canAttack(data) {
       if (this.teamColor == "white") {
+        //para los peones blancos
         if (this.y == 0) {
-          return this.chessboardMatriz[this.y + 1][this.x - 1].color == "black"
-            ? true
-            : false;
+          //si se encuentra en la casilla 0 o 7 (peones de los extremos del tablero)
+          if ((this.y + 1 == data.end[1]) & (this.x - 1 == data.end[0])) {
+            //si la posicion a la que se quiere mover es diagonal hacia el frente (solo se evalua un lado para evitar error)
+            return this.chessboardMatriz[this.y + 1][this.x - 1].color == "black" //y hay una pieza en dicha posicion
+              ? true
+              : false;
+          } else return false;
         }
         if (this.y == 7) {
-          return this.chessboardMatriz[this.y - 1][this.x - 1].color == "black"
-            ? true
-            : false;
+          if ((this.y - 1 == data.end[1]) & (this.x - 1 == data.end[0])) {
+            return this.chessboardMatriz[this.y - 1][this.x - 1].color == "black"
+              ? true
+              : false;
+          } else return false;
         }
+        ////////////////////////////////////////////////////////////////////////////////////////
+        //(El resto de los peones) se evaluan ambas posiciones diagonales hacia el frente
         if (
-          (this.chessboardMatriz[this.y + 1][this.x - 1].color == "black") |
-          (this.chessboardMatriz[this.y - 1][this.x - 1].color == "black")
+          ((this.chessboardMatriz[this.y + 1][this.x - 1].color == "black") |
+            (this.chessboardMatriz[this.y - 1][this.x - 1].color == "black")) &
+          (((this.y + 1 == data.end[1]) & (this.x - 1 == data.end[0])) |
+            ((this.y - 1 == data.end[1]) & (this.x - 1 == data.end[0])))
         )
           return true;
       }
+      // se hace lo mismo con los peones negros, solo cambia la posicion a la que se pueden atacar  (diagonal hacia abajo)
       if (this.teamColor == "black") {
         if (this.y == 0) {
-          return this.chessboardMatriz[this.y + 1][this.x + 1].color == "white"
-            ? true
-            : false;
+          if ((this.y + 1 == data.end[1]) & (this.x + 1 == data.end[0])) {
+            return this.chessboardMatriz[this.y + 1][this.x + 1].color == "white"
+              ? true
+              : false;
+          } else return false;
         }
         if (this.y == 7) {
-          return this.chessboardMatriz[this.y - 1][this.x + 1].color == "white"
-            ? true
-            : false;
+          if ((this.y + 1 == data.end[1]) & (this.x + 1 == data.end[0])) {
+            return this.chessboardMatriz[this.y - 1][this.x + 1].color == "white"
+              ? true
+              : false;
+          } else return false;
         }
         if (
-          (this.chessboardMatriz[this.y + 1][this.x + 1].color == "white") |
-          (this.chessboardMatriz[this.y - 1][this.x + 1].color == "white")
+          ((this.chessboardMatriz[this.y + 1][this.x + 1].color == "white") |
+            (this.chessboardMatriz[this.y - 1][this.x + 1].color == "white")) &
+          (((this.y + 1 == data.end[1]) & (this.x + 1 == data.end[0])) |
+            ((this.y - 1 == data.end[1]) & (this.x + 1 == data.end[0])))
         )
           return true;
       }
