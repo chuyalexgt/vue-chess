@@ -118,10 +118,12 @@ export default {
     },
     canMove(data) {
       if (this.teamColor == "white") {
-        if ((data.start[0] - data.end[0] == 1) | 2) return true;
+        if ((data.start[0] - data.end[0] == 1) | (data.start[0] - data.end[0] == 2))
+          return true;
       }
       if (this.teamColor == "black") {
-        if ((data.start[0] - data.end[0] == -1) | -2) return true;
+        if ((data.start[0] - data.end[0] == -1) | (data.start[0] - data.end[0] == -2))
+          return true;
       }
       return false;
     },
@@ -129,11 +131,13 @@ export default {
       if (Math.abs(data.start[0] - data.end[0]) > 2) return false;
       if (this.teamColor == "white") {
         if ((data.start[0] == 6) & (Math.abs(data.start[0] - data.end[0]) == 2))
+          //si esta en la posicion inicial, se puede mover dos casillas
           return true;
-        if (Math.abs(data.start[0] - data.end[0]) === 1) return true;
+        if (Math.abs(data.start[0] - data.end[0]) === 1) return true; //sino solo una
       }
       if (this.teamColor == "black") {
         if ((data.start[0] == 1) & (Math.abs(data.start[0] - data.end[0]) == 2))
+          //si esta en la posicion inicial, se puede mover dos casillas
           return true;
         if (Math.abs(data.start[0] - data.end[0]) === 1) return true;
       }

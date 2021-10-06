@@ -109,7 +109,7 @@ export default {
       coronationPosition: [],
     };
   },
-  created() {
+  mounted() {
     this.$bus.$on("gameStart", () => {
       this.turnState = true;
       this.chessboardMatriz = Array(8)
@@ -173,6 +173,7 @@ export default {
           }
         )
       );
+      console.log("movimiento");
       this.chessboardMatriz[data.end[1]].splice(
         data.end[0],
         1,
@@ -193,12 +194,12 @@ export default {
         : data.pieceData.color == "black"
         ? (this.turnState = true)
         : null;
-      this.$bus.$emit("playerTurn",this.turnState)
+      this.$bus.$emit("addMovementData", data);
+      this.$bus.$emit("playerTurn", this.turnState);
     });
     this.$bus.$on("coronation", (data) => {
       this.coronationPosition = data;
       this.coronationDialog = true;
-      // this.chessboardMatriz[data[1]][data[0]].content = this.coronationSelection;
     });
   },
   props: {},

@@ -37,9 +37,6 @@ export default {
     this.$bus.$on("positionsToMoveBishop", (data) => {
       //movimiento de arfil
       if ((data.start[0] == this.x) & (data.start[1] == this.y)) {
-        console.log("arfil");
-        console.log(this.chessboardMatriz);
-
         //Si es la ficha que seleccionaste...
         this.diagonalMovement(data);
       }
