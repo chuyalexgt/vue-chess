@@ -1,12 +1,5 @@
 <template>
   <v-app>
-    <v-alert type="error" class="my-3 alert-position" v-if="invalidMovement"
-      >Movimiento invalido</v-alert
-    >
-    <v-alert type="error" class="my-3 alert-position" v-if="wrongTurn"
-      >Aun no es tu turno</v-alert
-    >
-
     <v-dialog :value="dialogState" persistent fullscreen>
       <v-card color="brown lighten-4">
         <v-toolbar color="brown darken-1" elevation="10" v-if="showStartMenu" dark
@@ -49,6 +42,10 @@
     >
       <ChessBoard />
       <div class="pa-5 ma-5 | background_UI">
+        <v-alert type="error" class="my-3" v-if="invalidMovement"
+          >Movimiento invalido</v-alert
+        >
+        <v-alert type="error" class="my-3" v-if="wrongTurn">Aun no es tu turno</v-alert>
         <v-row>
           <v-col>
             <v-banner class="text-center">
@@ -75,7 +72,10 @@
                   <v-expansion-panel-header color="brown lighten-3"
                     >Movimientos</v-expansion-panel-header
                   >
-                  <v-expansion-panel-content class="pt-4 | scroll" color="brown lighten-5">
+                  <v-expansion-panel-content
+                    class="pt-4 | scroll"
+                    color="brown lighten-5"
+                  >
                     <v-banner
                       single-line
                       v-for="(m, index) in movementsList"
@@ -254,6 +254,17 @@ export default {
 #app {
   background: url(./assets/wooden-background.png) repeat center center fixed;
 }
+*::-webkit-scrollbar{
+  width: 0.5rem;
+}
+*::-webkit-scrollbar-track{
+  background-color: #CFB784;
+}
+*::-webkit-scrollbar-thumb{
+  border-radius: 7px;
+  width: 0.6rem;
+  background-color: #a08357;
+}
 .alert-position {
   position: absolute;
   top: 50vh;
@@ -266,7 +277,7 @@ export default {
   background-color: #cfb78494;
   box-shadow: inset 9px 9px 18px #c5ae7d, inset -9px -9px 18px #d9c08b;
 }
-.scroll{
+.scroll {
   height: 280px;
   overflow-y: scroll;
   scroll-behavior: smooth;

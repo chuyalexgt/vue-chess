@@ -102,9 +102,10 @@ export default {
         ////////////////////////////////////////////////////////////////////////////////////////
         //(El resto de los peones) se evaluan ambas posiciones diagonales hacia el frente
         if (
-          ((this.chessboardMatriz[this.y + 1][this.x - 1].color == "black") |
-            (this.chessboardMatriz[this.y - 1][this.x - 1].color == "black")) &
-          (((this.y + 1 == data.end[1]) & (this.x - 1 == data.end[0])) |
+          //la posicion a la que se quiere mover tiene una ficha enemiga y esta hacia el frente
+          ((this.chessboardMatriz[this.y + 1][this.x - 1].color == "black") &
+            ((this.y + 1 == data.end[1]) & (this.x - 1 == data.end[0]))) |
+          ((this.chessboardMatriz[this.y - 1][this.x - 1].color == "black") &
             ((this.y - 1 == data.end[1]) & (this.x - 1 == data.end[0])))
         )
           return true;
@@ -126,9 +127,9 @@ export default {
           } else return false;
         }
         if (
-          ((this.chessboardMatriz[this.y + 1][this.x + 1].color == "white") |
-            (this.chessboardMatriz[this.y - 1][this.x + 1].color == "white")) &
-          (((this.y + 1 == data.end[1]) & (this.x + 1 == data.end[0])) |
+          ((this.chessboardMatriz[this.y + 1][this.x + 1].color == "white") &
+            ((this.y + 1 == data.end[1]) & (this.x + 1 == data.end[0]))) |
+          ((this.chessboardMatriz[this.y - 1][this.x + 1].color == "white") &
             ((this.y - 1 == data.end[1]) & (this.x + 1 == data.end[0])))
         )
           return true;
