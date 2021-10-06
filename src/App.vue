@@ -75,13 +75,12 @@
                   <v-expansion-panel-header color="brown lighten-3"
                     >Movimientos</v-expansion-panel-header
                   >
-                  <v-expansion-panel-content class="pt-4" color="brown lighten-5">
-                    <v-virtual-scroll
+                  <v-expansion-panel-content class="pt-4 | scroll" color="brown lighten-5">
+                    <v-banner
                       single-line
                       v-for="(m, index) in movementsList"
                       :key="index"
                       color="brown lighten-4"
-                      item-height="55px"
                     >
                       <v-row>
                         <v-col class="d-flex justify-center align-center">
@@ -97,7 +96,7 @@
                           <p>Pos. Final: {{ `Row - ${m.end[0]}  Col - ${m.end[1]}` }}</p>
                         </v-col>
                       </v-row>
-                    </v-virtual-scroll>
+                    </v-banner>
                   </v-expansion-panel-content>
                 </v-expansion-panel>
               </v-expansion-panels>
@@ -266,5 +265,10 @@ export default {
   border-radius: 41px;
   background-color: #cfb78494;
   box-shadow: inset 9px 9px 18px #c5ae7d, inset -9px -9px 18px #d9c08b;
+}
+.scroll{
+  height: 280px;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
 }
 </style>
