@@ -86,6 +86,7 @@ export default {
   data() {
     return {
       turnState: true,
+      movAux: true,
       chessboardMatriz: Array(8) ///Formato [col][row]
         .fill(null)
         .map(() =>
@@ -157,40 +158,49 @@ export default {
         this.$bus.$emit("positionsToMovePawn", dataToSend);
     });
     this.$bus.$on("executeMovement", (data) => {
-      this.chessboardMatriz[data.start[1]].splice(
-        data.start[0],
-        1,
-        Object.assign(
-          {},
-          {
-            content: "",
-            color: "",
-          }
-        )
-      );
-      console.log("movimiento");
-      this.chessboardMatriz[data.end[1]].splice(
-        data.end[0],
-        1,
-        Object.assign(
-          {},
-          {
-            content: data.pieceData.content,
-            color: data.pieceData.color,
-          }
-        )
-      );
-      this.piecePosition = [];
-      this.pieceData = {};
-      this.positionToMove = [];
-      this.dataOfpositionToMove = {};
-      data.pieceData.color == "white" //swicheo los turnos asi para evitar que se repitan
-        ? (this.turnState = false)
-        : data.pieceData.color == "black"
-        ? (this.turnState = true)
-        : null;
-      this.$bus.$emit("addMovementData", data);
-      this.$bus.$emit("playerTurn", this.turnState);
+      if (this.movAux) {
+        this.movAux = false;
+        console.log("mov")
+        if (this.chessboardMatriz[data.end[1]][data.end[0]].color != "") {
+          this.$bus.$emit("addToCaptured", {
+            content: this.chessboardMatriz[data.end[1]][data.end[0]].content,
+            color: this.chessboardMatriz[data.end[1]][data.end[0]].color,
+          });
+        }
+        this.chessboardMatriz[data.start[1]].splice(
+          data.start[0],
+          1,
+          Object.assign(
+            {},
+            {
+              content: "",
+              color: "",
+            }
+          )
+        );
+        this.chessboardMatriz[data.end[1]].splice(
+          data.end[0],
+          1,
+          Object.assign(
+            {},
+            {
+              content: data.pieceData.content,
+              color: data.pieceData.color,
+            }
+          )
+        );
+        this.piecePosition = [];
+        this.pieceData = {};
+        this.positionToMove = [];
+        this.dataOfpositionToMove = {};
+        data.pieceData.color == "white" //swicheo los turnos asi para evitar que se repitan
+          ? (this.turnState = false)
+          : data.pieceData.color == "black"
+          ? (this.turnState = true)
+          : null;
+        this.$bus.$emit("addMovementData", data);
+        this.$bus.$emit("playerTurn", this.turnState);
+      }
     });
     this.$bus.$on("coronation", (data) => {
       this.coronationPosition = data;
@@ -216,6 +226,9 @@ export default {
         blackKingIsAlive ? null : this.gameOver("black");
       },
     },
+    turnState() {
+      this.movAux = true;
+    },
   },
   methods: {
     addPiece(row, col, color, piece) {
@@ -233,7 +246,6 @@ export default {
     },
     executeCoronation(selection) {
       this.coronationDialog = false;
-      console.log(this.coronationPosition);
       this.chessboardMatriz[this.coronationPosition[1]][
         this.coronationPosition[0]
       ].content = selection;

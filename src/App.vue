@@ -104,15 +104,23 @@
           </v-col>
         </v-row>
         <v-row class="d-flex justify-center">
-          <v-btn
-            @click="startGame"
-            class="my-10"
-            elevation="10"
-            color="brown lighten-3"
-            rounded
-            large
-            >Reiniciar Partida</v-btn
-          >
+          <v-col>
+            <CapturedPieces :pieces="whiteCaptured" />
+          </v-col>
+          <v-col>
+            <v-btn
+              @click="startGame"
+              class="my-10"
+              elevation="10"
+              color="brown lighten-3"
+              rounded
+              large
+              >Reiniciar Partida</v-btn
+            >
+          </v-col>
+          <v-col>
+            <CapturedPieces :pieces="blackCaptured" />
+          </v-col>
         </v-row>
       </div>
     </v-card>
@@ -137,6 +145,7 @@ export default {
       seconds: 0,
       turnState: true,
       movementsListState: true, //la uso para evitar que se agreguen varios movimiento clonados
+      capturedListState: true,
       movementsList: [],
       whiteCaptured: [],
       blackCaptured: [],
@@ -145,6 +154,7 @@ export default {
   watch: {
     turnState() {
       this.movementsListState = true;
+      this.capturedListState = true;
     },
   },
   computed: {
@@ -163,11 +173,11 @@ export default {
         case "sm":
           return "60vw";
         case "md":
-          return "40vw";
+          return "45vw";
         case "lg":
-          return "40vw";
+          return "45vw";
         case "xl":
-          return "40vw";
+          return "45vw";
       }
     },
     UI_distribution() {
@@ -195,6 +205,8 @@ export default {
       this.minutes = 0;
       this.movementsList = [];
       this.turnState = true;
+      this.whiteCaptured = [];
+      this.blackCaptured = [];
     },
     defineIcon(type) {
       if (type == "Pawn") return "mdi-chess-pawn";
@@ -227,7 +239,13 @@ export default {
         this.movementsList.unshift(data);
       }
     });
-
+    this.$bus.$on("addToCaptured", (data) => {
+      if (this.capturedListState) {
+        this.capturedListState = false;
+        if (data.color == "white") this.whiteCaptured.push(data);
+        if (data.color == "black") this.blackCaptured.push(data);
+      }
+    });
     ///////////////////////////////////////////////////////////
     this.timer();
     this.$bus.$on("showWinner", (looser) => {
@@ -235,7 +253,7 @@ export default {
       this.dialogState = true;
       looser == "black"
         ? (this.winner = "1")
-        : null(looser == "white")
+        : looser == "white"
         ? (this.winner = "2")
         : null;
     });
@@ -254,13 +272,13 @@ export default {
 #app {
   background: url(./assets/wooden-background.png) repeat center center fixed;
 }
-*::-webkit-scrollbar{
+*::-webkit-scrollbar {
   width: 0.5rem;
 }
-*::-webkit-scrollbar-track{
-  background-color: #CFB784;
+*::-webkit-scrollbar-track {
+  background-color: #cfb784;
 }
-*::-webkit-scrollbar-thumb{
+*::-webkit-scrollbar-thumb {
   border-radius: 7px;
   width: 0.6rem;
   background-color: #a08357;

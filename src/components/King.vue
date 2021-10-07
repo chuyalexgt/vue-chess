@@ -60,6 +60,7 @@ export default {
         } else {
           this.$bus.$emit("invalidMovement");
         }
+        return
       }
       if (linearValidation) {
         if (linearValidation & dontKillFriends) {

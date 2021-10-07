@@ -59,6 +59,7 @@ export default {
         } else {
           this.$bus.$emit("invalidMovement");
         }
+        return
       }
       if (linearValidation) {
         this.linearDontFlyValidation = this.linearDontFly(data); ///validacion para que no salte otras piezas
