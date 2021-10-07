@@ -38,65 +38,55 @@ export default {
       //movimiento de torre
       if ((data.start[0] == this.x) & (data.start[1] == this.y)) {
         //Si es la ficha que seleccionaste...
-        this.linearMovement(data);
+        if (this.chessboardMatriz[data.end[1]][data.end[0]].inRange)
+          this.$bus.$emit("executeMovement", data);
+        else this.$bus.$emit("invalidMovement");
+      }
+    });
+    this.$bus.$on("rangeToMoveRook", (position) => {
+      if ((position[0] == this.x) & (position[1] == this.y)) {
+        //Si es la ficha que seleccionaste...
+        this.linearMovementRange(position);
       }
     });
   },
   methods: {
-    linearMovement(data) {
-      let validation =
-        ((data.start[0] != data.end[0]) & (data.start[1] == data.end[1])) |
-        ((data.start[0] == data.end[0]) & (data.start[1] != data.end[1]));
-      let dontKillFriends = data.pieceData.color != data.positionData.color;
-      this.linearDontFlyValidation = this.linearDontFly(data); ///validacion para que no salte otras piezas
-      if (validation & dontKillFriends & this.linearDontFlyValidation) {
-        this.linearDontFlyValidation = false;
-        this.$bus.$emit("executeMovement", data);
-      } else {
-        this.$bus.$emit("invalidMovement");
-      }
+    linearMovementRange(position) {
+      let xMax, yMax, _xMax, _yMax; //cada variable es la componente vertical/horizontal del plano
+      xMax = Math.abs(position[1] - 7); //➡
+      yMax = Math.abs(position[0] - 0); //⬆
+      _xMax = Math.abs(position[1] - 0); //⬅
+      _yMax = Math.abs(position[0] - 7); //⬇
+      this.linearDontFly(position, xMax, yMax, _xMax, _yMax); ///validacion para que no salte otras piezas colorear las casillas a las que se puede mover
     },
-    linearDontFly(data) {
-      let start = data.start;
-      let end = data.end;
-      let colission = false;
-      let xdiferential = Math.abs(start[0] - end[0]);
-      let ydiferential = Math.abs(start[1] - end[1]);
-
-      if ((start[0] <= end[0]) & (start[1] == end[1])) {
-        //mov. en x
-        for (let i = 1; i < xdiferential; i++) {
-          if (this.chessboardMatriz[start[1]][start[0] + i].content != "") {
-            colission = true;
-          }
-        }
+    linearDontFly(position, xMax, yMax, _xMax, _yMax) {
+      let start = position;
+      let cellsInRange = [];
+      //mov. en x
+      for (let i = 1; i <= xMax; i++) {
+        if (this.chessboardMatriz[start[1] + i][start[0]].color == this.teamColor) break;
+        cellsInRange.push([start[1] + i, start[0]]);
+        if (this.chessboardMatriz[start[1] + i][start[0]].content != "") break;
       }
-      if ((start[0] == end[0]) & (start[1] <= end[1])) {
-        //mov. en y
-        for (let i = 1; i < ydiferential; i++) {
-          if (this.chessboardMatriz[start[1] + i][start[0]].content != "") {
-            colission = true;
-          }
-        }
+      //mov. en y
+      for (let i = 1; i <= yMax; i++) {
+        if (this.chessboardMatriz[start[1]][start[0] - i].color == this.teamColor) break;
+        cellsInRange.push([start[1], start[0] - i]);
+        if (this.chessboardMatriz[start[1]][start[0] - i].content != "") break;
       }
-      if ((start[0] >= end[0]) & (start[1] == end[1])) {
-        //mov. en -x
-        for (let i = 1; i < xdiferential; i++) {
-          if (this.chessboardMatriz[start[1]][start[0] - i].content != "") {
-            colission = true;
-          }
-        }
+      //mov. en -x
+      for (let i = 1; i <= _xMax; i++) {
+        if (this.chessboardMatriz[start[1] - i][start[0]].color == this.teamColor) break;
+        cellsInRange.push([start[1] - i, start[0]]);
+        if (this.chessboardMatriz[start[1] - i][start[0]].content != "") break;
       }
-      if ((start[0] == end[0]) & (start[1] >= end[1])) {
-        //mov. en -y
-        for (let i = 1; i < ydiferential; i++) {
-          if (this.chessboardMatriz[start[1] - i][start[0]].content != "") {
-            colission = true;
-          }
-        }
+      //mov. en -y
+      for (let i = 1; i <= _yMax; i++) {
+        if (this.chessboardMatriz[start[1]][start[0] + i].color == this.teamColor) break;
+        cellsInRange.push([start[1], start[0] + i]);
+        if (this.chessboardMatriz[start[1]][start[0] + i].content != "") break;
       }
-      if (!colission) return true;
-      else return false;
+      this.$bus.$emit("renderCellsInRange", cellsInRange);
     },
   },
   computed: {

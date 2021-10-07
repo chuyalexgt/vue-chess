@@ -66,9 +66,9 @@ export default {
         ? (x_yMax = Math.abs(position[0] - 7))
         : (x_yMax = Math.abs(position[1] - 7));
       // let dontKillFriends = data.pieceData.color != data.positionData.color;
-      this.diagonalDontFly_beta(position, xyMax, _xyMax, _x_yMax, x_yMax); ///funcion para validar que no salten otras piezas y colorear las casillas a las que se puede mover
+      this.diagonalDontFly(position, xyMax, _xyMax, _x_yMax, x_yMax); ///funcion para validar que no salten otras piezas y colorear las casillas a las que se puede mover
     },
-    diagonalDontFly_beta(position, xyMax, _xyMax, _x_yMax, x_yMax) {
+    diagonalDontFly(position, xyMax, _xyMax, _x_yMax, x_yMax) {
       let start = position;
       let cellsInRange = [];
       //mov. en cuadrante 4
@@ -101,60 +101,6 @@ export default {
       }
       this.$bus.$emit("renderCellsInRange", cellsInRange);
     },
-    //////////////////////////////////////////////////////
-    // diagonalMovement(data) {
-    //   let validation =
-    //     Math.abs(data.start[0] - data.end[0]) === Math.abs(data.start[1] - data.end[1]);
-    //   let dontKillFriends = data.pieceData.color != data.positionData.color;
-    //   this.diagonalDontFlyValidation = this.diagonalDontFly(data); ///validacion para que no salte otras piezas
-    //   if (validation & dontKillFriends & this.diagonalDontFlyValidation) {
-    //     this.diagonalDontFlyValidation = false;
-
-    //     this.$bus.$emit("executeMovement", data);
-    //   } else {
-    //     this.$bus.$emit("invalidMovement");
-    //   }
-    // },
-    // diagonalDontFly(data) {
-    //   let start = data.start;
-    //   let end = data.end;
-    //   let colission = false;
-    //   let stepLenght = Math.abs(start[0] - end[0]);
-    //   if ((start[0] <= end[0]) & (start[1] <= end[1])) {
-    //     //mov. en cuadrante 1
-    //     for (let i = 1; i < stepLenght; i++) {
-    //       if (this.chessboardMatriz[start[1] + i][start[0] + i].content != "") {
-    //         colission = true;
-    //       }
-    //     }
-    //   }
-    //   if ((start[0] >= end[0]) & (start[1] <= end[1])) {
-    //     //mov. en cuadrante 2
-    //     for (let i = 1; i < stepLenght; i++) {
-    //       if (this.chessboardMatriz[start[1] + i][start[0] - i].content != "") {
-    //         colission = true;
-    //       }
-    //     }
-    //   }
-    //   if ((start[0] >= end[0]) & (start[1] >= end[1])) {
-    //     //mov. en cuadrante 3
-    //     for (let i = 1; i < stepLenght; i++) {
-    //       if (this.chessboardMatriz[start[1] - i][start[0] - i].content != "") {
-    //         colission = true;
-    //       }
-    //     }
-    //   }
-    //   if ((start[0] <= end[0]) & (start[1] >= end[1])) {
-    //     //mov. en cuadrante 4
-    //     for (let i = 1; i < stepLenght; i++) {
-    //       if (this.chessboardMatriz[start[1] - i][start[0] + i].content != "") {
-    //         colission = true;
-    //       }
-    //     }
-    //   }
-    //   if (!colission) return true;
-    //   else return false;
-    // },
   },
   computed: {
     iconRender() {
