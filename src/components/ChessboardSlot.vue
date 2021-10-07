@@ -6,54 +6,62 @@
     :color="colorCalculate"
     @click="movePiece()"
   >
-    <Bishop
-      v-if="cell.content === 'Bishop'"
-      :teamColor="cell.color"
-      :x="rowIndex"
-      :y="colIndex"
-      :contain="cell"
-      :chessboardMatriz="chessboardMatriz"
-    />
-    <King
-      v-if="cell.content === 'King'"
-      :teamColor="cell.color"
-      :x="rowIndex"
-      :y="colIndex"
-      :contain="cell"
-      :chessboardMatriz="chessboardMatriz"
-    />
-    <Knight
-      v-if="cell.content === 'Knight'"
-      :teamColor="cell.color"
-      :x="rowIndex"
-      :y="colIndex"
-      :contain="cell"
-      :chessboardMatriz="chessboardMatriz"
-    />
-    <Pawn
-      v-if="cell.content === 'Pawn'"
-      :teamColor="cell.color"
-      :x="rowIndex"
-      :y="colIndex"
-      :contain="cell"
-      :chessboardMatriz="chessboardMatriz"
-    />
-    <Queen
-      v-if="cell.content === 'Queen'"
-      :teamColor="cell.color"
-      :x="rowIndex"
-      :y="colIndex"
-      :contain="cell"
-      :chessboardMatriz="chessboardMatriz"
-    />
-    <Rook
-      v-if="cell.content === 'Rook'"
-      :teamColor="cell.color"
-      :x="rowIndex"
-      :y="colIndex"
-      :contain="cell"
-      :chessboardMatriz="chessboardMatriz"
-    />
+    <div
+      :class="{
+        'inRange d-flex justify-center align-center': cell.inRange,
+        'enemyInRange d-flex justify-center align-center':
+          cell.inRange & (cell.content != ''),
+      }"
+    >
+      <Bishop
+        v-if="cell.content === 'Bishop'"
+        :teamColor="cell.color"
+        :x="rowIndex"
+        :y="colIndex"
+        :contain="cell"
+        :chessboardMatriz="chessboardMatriz"
+      />
+      <King
+        v-if="cell.content === 'King'"
+        :teamColor="cell.color"
+        :x="rowIndex"
+        :y="colIndex"
+        :contain="cell"
+        :chessboardMatriz="chessboardMatriz"
+      />
+      <Knight
+        v-if="cell.content === 'Knight'"
+        :teamColor="cell.color"
+        :x="rowIndex"
+        :y="colIndex"
+        :contain="cell"
+        :chessboardMatriz="chessboardMatriz"
+      />
+      <Pawn
+        v-if="cell.content === 'Pawn'"
+        :teamColor="cell.color"
+        :x="rowIndex"
+        :y="colIndex"
+        :contain="cell"
+        :chessboardMatriz="chessboardMatriz"
+      />
+      <Queen
+        v-if="cell.content === 'Queen'"
+        :teamColor="cell.color"
+        :x="rowIndex"
+        :y="colIndex"
+        :contain="cell"
+        :chessboardMatriz="chessboardMatriz"
+      />
+      <Rook
+        v-if="cell.content === 'Rook'"
+        :teamColor="cell.color"
+        :x="rowIndex"
+        :y="colIndex"
+        :contain="cell"
+        :chessboardMatriz="chessboardMatriz"
+      />
+    </div>
   </v-card>
 </template>
 
@@ -75,15 +83,16 @@ export default {
   methods: {
     movePiece() {
       if (!this.isPieceSelected) {
-        if (this.turnState & (this.cell.color == "black")){
+        if (this.turnState & (this.cell.color == "black")) {
           this.$bus.$emit("wrongTurnIndicator"); //si es el turno de blancas y se quiere mover una negra no lo permite
-          return
+          return;
         }
-        if (!this.turnState & (this.cell.color == "white")){
+        if (!this.turnState & (this.cell.color == "white")) {
           this.$bus.$emit("wrongTurnIndicator"); //mismo caso con el turno de las negras
-          return
+          return;
         }
         if (this.cell.content === "") return; //Evita el movimiento de una celda sin pieza
+        this.cell.inRange = true
         this.$bus.$emit("piecePosition", {
           position: [this.rowIndex, this.colIndex],
           data: this.cell,
@@ -116,4 +125,17 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.inRange {
+  width: 100%;
+  height: 100%;
+  border: 3px outset #1c6ea4;
+  background-color: rgba(29, 185, 195, 0.5);
+}
+.enemyInRange {
+  width: 100%;
+  height: 100%;
+  border: 3px outset #a41c1c;
+  background-color: rgba(195, 29, 29, 0.5);
+}
+</style>

@@ -96,6 +96,7 @@ export default {
               {
                 content: "",
                 color: "",
+                inRange: false,
               }
             )
           )
@@ -117,6 +118,7 @@ export default {
         e = e.map((cell) => {
           cell.content = "";
           cell.color = "";
+          cell.inRange = false;
           return cell;
         });
         return e;
@@ -160,7 +162,7 @@ export default {
     this.$bus.$on("executeMovement", (data) => {
       if (this.movAux) {
         this.movAux = false;
-        console.log("mov")
+        this.clearRange();
         if (this.chessboardMatriz[data.end[1]][data.end[0]].color != "") {
           this.$bus.$emit("addToCaptured", {
             content: this.chessboardMatriz[data.end[1]][data.end[0]].content,
@@ -175,6 +177,7 @@ export default {
             {
               content: "",
               color: "",
+              inRange: false,
             }
           )
         );
@@ -186,6 +189,7 @@ export default {
             {
               content: data.pieceData.content,
               color: data.pieceData.color,
+              inRange: false,
             }
           )
         );
@@ -206,6 +210,7 @@ export default {
       this.coronationPosition = data;
       this.coronationDialog = true;
     });
+    this.$bus.$on("invalidMovement", this.clearRange);
   },
   props: {},
   watch: {
@@ -240,6 +245,7 @@ export default {
           {
             content: piece,
             color: color,
+            inRange: false,
           }
         )
       );
@@ -256,6 +262,16 @@ export default {
     gameOver(looser) {
       this.coronationDialog = false;
       this.$bus.$emit("showWinner", looser);
+    },
+    clearRange() {
+      console.log("hola");
+      this.chessboardMatriz = this.chessboardMatriz.map((e) => {
+        e = e.map((cell) => {
+          cell.inRange = false;
+          return cell;
+        });
+        return e;
+      });
     },
   },
   computed: {
