@@ -113,6 +113,7 @@ export default {
   },
   mounted() {
     this.$bus.$on("gameStart", () => {
+      this.isPieceSelected = false
       this.turnState = true;
       this.chessboardMatriz = this.chessboardMatriz.map((e) => {
         e = e.map((cell) => {
@@ -264,7 +265,6 @@ export default {
       this.$bus.$emit("showWinner", looser);
     },
     clearRange() {
-      console.log("hola");
       this.chessboardMatriz = this.chessboardMatriz.map((e) => {
         e = e.map((cell) => {
           cell.inRange = false;

@@ -11,6 +11,7 @@
         'inRange d-flex justify-center align-center': cell.inRange,
         'enemyInRange d-flex justify-center align-center':
           cell.inRange & (cell.content != ''),
+        'selfInRange d-flex justify-center align-center': cell.inRange & isSelected,
       }"
     >
       <Bishop
@@ -70,7 +71,9 @@ export default {
   name: "ChessboardSlot",
   created() {},
   data() {
-    return {};
+    return {
+      isSelected: false,
+    };
   },
   props: {
     rowIndex: Number,
@@ -92,7 +95,9 @@ export default {
           return;
         }
         if (this.cell.content === "") return; //Evita el movimiento de una celda sin pieza
-        this.cell.inRange = true
+        console.log(this.rowIndex,this.colIndex)
+        this.cell.inRange = true;
+        this.isSelected = true
         this.$bus.$emit("piecePosition", {
           position: [this.rowIndex, this.colIndex],
           data: this.cell,
@@ -103,6 +108,7 @@ export default {
         return;
       }
       if (this.isPieceSelected) {
+        this.isSelected = false
         this.$bus.$emit("positionToMove", {
           position: [this.rowIndex, this.colIndex],
           data: this.cell,
@@ -137,5 +143,11 @@ export default {
   height: 100%;
   border: 3px outset #a41c1c;
   background-color: rgba(195, 29, 29, 0.5);
+}
+.selfInRange {
+  width: 100%;
+  height: 100%;
+  border: 3px outset #89d6e9;
+  background-color: #89d6e98f;
 }
 </style>
