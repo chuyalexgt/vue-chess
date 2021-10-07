@@ -111,9 +111,16 @@ export default {
       coronationPosition: [],
     };
   },
+  created() {
+    this.$bus.$on("renderCellsInRange", (cellsInRange) => {
+      cellsInRange.forEach((e) => {
+        this.chessboardMatriz[e[0]][e[1]] = { ...this.chessboardMatriz[e[0]][e[1]], inRange: true };
+      }, this);
+    });
+  },
   mounted() {
     this.$bus.$on("gameStart", () => {
-      this.isPieceSelected = false
+      this.isPieceSelected = false;
       this.turnState = true;
       this.chessboardMatriz = this.chessboardMatriz.map((e) => {
         e = e.map((cell) => {
@@ -161,7 +168,7 @@ export default {
         this.$bus.$emit("positionsToMovePawn", dataToSend);
     });
     this.$bus.$on("executeMovement", (data) => {
-      if (this.movAux) {
+      if (this.movAux) {    //previene que se ejecute varias veces el evento en un solo turno
         this.movAux = false;
         this.clearRange();
         if (this.chessboardMatriz[data.end[1]][data.end[0]].color != "") {
@@ -267,8 +274,15 @@ export default {
     clearRange() {
       this.chessboardMatriz = this.chessboardMatriz.map((e) => {
         e = e.map((cell) => {
-          cell.inRange = false;
-          return cell;
+          cell = Object.assign(
+            {},
+            {
+              content : cell.content,
+              color : cell.color,
+              inRange : false
+            }
+          )
+          return cell
         });
         return e;
       });

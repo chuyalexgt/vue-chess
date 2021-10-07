@@ -11,7 +11,6 @@
         'inRange d-flex justify-center align-center': cell.inRange,
         'enemyInRange d-flex justify-center align-center':
           cell.inRange & (cell.content != ''),
-        'selfInRange d-flex justify-center align-center': cell.inRange & isSelected,
       }"
     >
       <Bishop
@@ -69,11 +68,13 @@
 <script>
 export default {
   name: "ChessboardSlot",
-  created() {},
+  created() {
+    this.$bus.$on("gameStart", () => {
+      this.isSelected = false;
+    });
+  },
   data() {
-    return {
-      isSelected: false,
-    };
+    return {};
   },
   props: {
     rowIndex: Number,
@@ -95,25 +96,29 @@ export default {
           return;
         }
         if (this.cell.content === "") return; //Evita el movimiento de una celda sin pieza
-        console.log(this.rowIndex,this.colIndex)
-        this.cell.inRange = true;
-        this.isSelected = true
+        this.multiBus();
         this.$bus.$emit("piecePosition", {
           position: [this.rowIndex, this.colIndex],
           data: this.cell,
         });
-
         this.$bus.$emit("switchSelection"); //cambia estado de isPieceSelected
-
         return;
       }
       if (this.isPieceSelected) {
-        this.isSelected = false
         this.$bus.$emit("positionToMove", {
           position: [this.rowIndex, this.colIndex],
           data: this.cell,
         });
       }
+    },
+    multiBus() {
+      let position = [this.rowIndex, this.colIndex];
+      if (this.cell.content == "Bishop") this.$bus.$emit("rangeToMoveBishop", position);
+      if (this.cell.content == "Knight") this.$bus.$emit("rangeToMoveKnight", position);
+      if (this.cell.content == "Queen") this.$bus.$emit("rangeToMoveQueen", position);
+      if (this.cell.content == "Rook") this.$bus.$emit("rangeToMoveRook", position);
+      if (this.cell.content == "King") this.$bus.$emit("rangeToMoveKing", position);
+      if (this.cell.content == "Pawn") this.$bus.$emit("rangeToMovePawn", position);
     },
   },
   computed: {
@@ -143,11 +148,5 @@ export default {
   height: 100%;
   border: 3px outset #a41c1c;
   background-color: rgba(195, 29, 29, 0.5);
-}
-.selfInRange {
-  width: 100%;
-  height: 100%;
-  border: 3px outset #89d6e9;
-  background-color: #89d6e98f;
 }
 </style>
