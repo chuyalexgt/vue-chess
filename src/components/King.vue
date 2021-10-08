@@ -38,7 +38,6 @@ export default {
         //Si es la ficha que seleccionaste y la casilla a la que se quiere mover esta dentro del rango, ejecuta el movimiento
         if (this.chessboardMatriz[data.end[1]][data.end[0]].inRange)
           this.$bus.$emit("executeMovement", data);
-        else this.$bus.$emit("invalidMovement");
       }
     });
     this.$bus.$on("rangeToMoveKing", (position) => {
@@ -64,7 +63,6 @@ export default {
       Math.abs(position[0] - 7) <= Math.abs(position[1] - 7)
         ? (x_yMax = Math.abs(position[0] - 7))
         : (x_yMax = Math.abs(position[1] - 7));
-      // let dontKillFriends = data.pieceData.color != data.positionData.color;
       this.diagonalDontFly(position, xyMax, _xyMax, _x_yMax, x_yMax); ///funcion para validar que no salten otras piezas y colorear las casillas a las que se puede mover
     },
     diagonalDontFly(position, xyMax, _xyMax, _x_yMax, x_yMax) {

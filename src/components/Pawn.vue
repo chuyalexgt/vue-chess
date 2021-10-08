@@ -33,136 +33,149 @@ export default {
   },
   created() {
     this.$bus.$on("positionsToMovePawn", (data) => {
-      //movimiento de Rey
+      //movimiento de peon
       if ((data.start[0] == this.x) & (data.start[1] == this.y)) {
+        //Si es la ficha que seleccionaste y la casilla a la que se quiere mover esta dentro del rango, ejecuta el movimiento
+        if (this.chessboardMatriz[data.end[1]][data.end[0]].inRange) {
+          this.$bus.$emit("executeMovement", data);
+          if (
+            ((data.end[0] == 0) & (this.teamColor == "white")) |
+            ((data.end[0] == 7) & (this.teamColor == "black"))
+          )
+            this.$bus.$emit("coronation", [data.end[0], data.end[1]]);
+        } else this.$bus.$emit("invalidMovement");
+      }
+    });
+    this.$bus.$on("rangeToMovePawn", (position) => {
+      if ((position[0] == this.x) & (position[1] == this.y)) {
         //Si es la ficha que seleccionaste...
-        this.pawnMovement(data);
+        this.pawnMovementRange(position);
       }
     });
   },
 
   methods: {
-    pawnMovement(data) {
+    pawnMovementRange(position) {
       // [x][y]
-      let diagonalValidation =
-        (Math.abs(data.start[0] - data.end[0]) === 1) & //Solo se mueve en diagonal si es una casilla
-        (Math.abs(data.start[1] - data.end[1]) === 1) &
-        this.canAttack(data); //y hay una ficha enemiga en la posicion
-      let linearValidation =
-        (data.start[1] == data.end[1]) & //No sea un movimiento vertical
-        (data.start[0] != data.end[0]) & //sea un movimiento horizontal
-        this.isFirstMovement(data) & // solo se mueva 1 casilla (o 2 si es el primer movimiento)
-        this.canMove(data) & // Solo sea un movimietno hacia el frente
-        (data.positionData.color == ""); //si se mueve hacia el frente no puede atacar
-      let dontKillFriends = data.pieceData.color != data.positionData.color;
-      if (diagonalValidation) {
-        if (diagonalValidation & dontKillFriends) {
-          this.$bus.$emit("executeMovement", data);
-          if (
-            ((data.end[0] == 0) & (this.teamColor == "white")) |
-            ((data.end[0] == 7) & (this.teamColor == "black"))
-          )
-            this.$bus.$emit("coronation", [data.end[0], data.end[1]]);
-          return;
-        } else {
-          this.$bus.$emit("invalidMovement");
-        }
-      }
-      if (linearValidation) {
-        if (linearValidation & dontKillFriends) {
-          this.$bus.$emit("executeMovement", data);
-          if (
-            ((data.end[0] == 0) & (this.teamColor == "white")) |
-            ((data.end[0] == 7) & (this.teamColor == "black"))
-          )
-            this.$bus.$emit("coronation", [data.end[0], data.end[1]]);
-        } else {
-          this.$bus.$emit("invalidMovement");
-        }
-      } else this.$bus.$emit("invalidMovement");
-    },
-    canAttack(data) {
+      let xyMax, _xyMax, _x_yMax, x_yMax; //el _ representa signo -, cada variable es la componente diagonal de cada cuadrante
+      Math.abs(position[0] - 0) <= Math.abs(position[1] - 7) //se calcula el valor maximo de la componente diagonal de cada cuadrante
+        ? (xyMax = Math.abs(position[0] - 0))
+        : (xyMax = Math.abs(position[1] - 7));
+      Math.abs(position[0] - 0) <= Math.abs(position[1] - 0)
+        ? (_xyMax = Math.abs(position[0] - 0))
+        : (_xyMax = Math.abs(position[1] - 0));
+      Math.abs(position[0] - 7) <= Math.abs(position[1] - 0)
+        ? (_x_yMax = Math.abs(position[0] - 7))
+        : (_x_yMax = Math.abs(position[1] - 0));
+      Math.abs(position[0] - 7) <= Math.abs(position[1] - 7)
+        ? (x_yMax = Math.abs(position[0] - 7))
+        : (x_yMax = Math.abs(position[1] - 7));
+      xyMax > 1 ? (xyMax = 1) : null; //para que solo pueda dar 1 paso max.
+      _xyMax > 1 ? (_xyMax = 1) : null;
+      _x_yMax > 1 ? (_x_yMax = 1) : null;
+      x_yMax > 1 ? (x_yMax = 1) : null;
+      ////////// solo movimientos diagonales hacia el frente estan permitidos
       if (this.teamColor == "white") {
-        //para los peones blancos
-        if (this.y == 0) {
-          //si se encuentra en la casilla 0 o 7 (peones de los extremos del tablero)
-          if ((this.y + 1 == data.end[1]) & (this.x - 1 == data.end[0])) {
-            //si la posicion a la que se quiere mover es diagonal hacia el frente (solo se evalua un lado para evitar error)
-            return this.chessboardMatriz[this.y + 1][this.x - 1].color == "black" //y hay una pieza en dicha posicion
-              ? true
-              : false;
-          } else return false;
-        }
-        if (this.y == 7) {
-          if ((this.y - 1 == data.end[1]) & (this.x - 1 == data.end[0])) {
-            return this.chessboardMatriz[this.y - 1][this.x - 1].color == "black"
-              ? true
-              : false;
-          } else return false;
-        }
-        ////////////////////////////////////////////////////////////////////////////////////////
-        //(El resto de los peones) se evaluan ambas posiciones diagonales hacia el frente
+        x_yMax = 0;
+        _x_yMax = 0;
+      }
+      if (this.teamColor == "black") {
+        xyMax = 0;
+        _xyMax = 0;
+      }
+      /////////////////////////////////////////////
+      let xMax, yMax, _xMax, _yMax; //cada variable es la componente vertical/horizontal del plano
+      xMax = 0; //➡                 //los peones no se mueven en vertical
+      yMax = Math.abs(position[0] - 0); //⬆
+      _xMax = 0; //⬅
+      _yMax = Math.abs(position[0] - 7); //⬇
+      xMax > 1 ? (xMax = 1) : null; //para que solo pueda dar 1 paso max.
+      yMax > 1 ? (yMax = 1) : null;
+      _xMax > 1 ? (_xMax = 1) : null;
+      _yMax > 1 ? (_yMax = 1) : null;
+      this.teamColor == "white" ? (_yMax = 0) : null; ///y solo se horizontal hacia el frente
+      this.teamColor == "black" ? (yMax = 0) : null;
+      (this.teamColor == "white") & (this.x == 6) ? (yMax = 2) : null; //se mueven 2 casillas si es el primer movimiento
+      (this.teamColor == "black") & (this.x == 1) ? (_yMax = 2) : null;
+      console.log(yMax, _yMax);
+
+      this.diagonalDontFly(position, xyMax, _xyMax, _x_yMax, x_yMax); ///funcion para validar que no salten otras piezas y colorear las casillas a las que se puede mover
+      this.linearDontFly(position, xMax, yMax, _xMax, _yMax);
+      ///////////////////////////////////////////////////
+    },
+    diagonalDontFly(position, xyMax, _xyMax, _x_yMax, x_yMax) {
+      let start = position;
+      let cellsInRange = [];
+      //mov. en cuadrante 4
+      for (let i = 1; i <= x_yMax; i++) {
+        if (this.chessboardMatriz[start[1] + i][start[0] + i].color == this.teamColor)
+          break;
         if (
-          //la posicion a la que se quiere mover tiene una ficha enemiga y esta hacia el frente
-          ((this.chessboardMatriz[this.y + 1][this.x - 1].color == "black") &
-            ((this.y + 1 == data.end[1]) & (this.x - 1 == data.end[0]))) |
-          ((this.chessboardMatriz[this.y - 1][this.x - 1].color == "black") &
-            ((this.y - 1 == data.end[1]) & (this.x - 1 == data.end[0])))
+          (this.chessboardMatriz[start[1] + i][start[0] + i].color != this.teamColor) &
+          (this.chessboardMatriz[start[1] + i][start[0] + i].color != "")
         )
-          return true;
+          cellsInRange.push([start[1] + i, start[0] + i]);
+        if (this.chessboardMatriz[start[1] + i][start[0] + i].content != "") break;
       }
-      // se hace lo mismo con los peones negros, solo cambia la posicion a la que se pueden atacar  (diagonal hacia abajo)
-      if (this.teamColor == "black") {
-        if (this.y == 0) {
-          if ((this.y + 1 == data.end[1]) & (this.x + 1 == data.end[0])) {
-            return this.chessboardMatriz[this.y + 1][this.x + 1].color == "white"
-              ? true
-              : false;
-          } else return false;
-        }
-        if (this.y == 7) {
-          if ((this.y + 1 == data.end[1]) & (this.x + 1 == data.end[0])) {
-            return this.chessboardMatriz[this.y - 1][this.x + 1].color == "white"
-              ? true
-              : false;
-          } else return false;
-        }
+      //mov. en cuadrante 1
+      for (let i = 1; i <= xyMax; i++) {
+        if (this.chessboardMatriz[start[1] + i][start[0] - i].color == this.teamColor)
+          break;
         if (
-          ((this.chessboardMatriz[this.y + 1][this.x + 1].color == "white") &
-            ((this.y + 1 == data.end[1]) & (this.x + 1 == data.end[0]))) |
-          ((this.chessboardMatriz[this.y - 1][this.x + 1].color == "white") &
-            ((this.y - 1 == data.end[1]) & (this.x + 1 == data.end[0])))
+          (this.chessboardMatriz[start[1] + i][start[0] - i].color != this.teamColor) &
+          (this.chessboardMatriz[start[1] + i][start[0] - i].color != "")
         )
-          return true;
+          cellsInRange.push([start[1] + i, start[0] - i]);
+        if (this.chessboardMatriz[start[1] + i][start[0] - i].content != "") break;
       }
-      return false;
+      //mov. en cuadrante 2
+      for (let i = 1; i <= _xyMax; i++) {
+        if (this.chessboardMatriz[start[1] - i][start[0] - i].color == this.teamColor)
+          break;
+        if (
+          (this.chessboardMatriz[start[1] - i][start[0] - i].color != this.teamColor) &
+          (this.chessboardMatriz[start[1] - i][start[0] - i].color != "")
+        )
+          cellsInRange.push([start[1] - i, start[0] - i]);
+        if (this.chessboardMatriz[start[1] - i][start[0] - i].content != "") break;
+      }
+      //mov. en cuadrante 3
+      for (let i = 1; i <= _x_yMax; i++) {
+        if (this.chessboardMatriz[start[1] - i][start[0] + i].color == this.teamColor)
+          break;
+        if (
+          (this.chessboardMatriz[start[1] - i][start[0] + i].color != this.teamColor) &
+          (this.chessboardMatriz[start[1] - i][start[0] + i].color != "")
+        )
+          cellsInRange.push([start[1] - i, start[0] + i]);
+        if (this.chessboardMatriz[start[1] - i][start[0] + i].content != "") break;
+      }
+      this.$bus.$emit("renderCellsInRange", cellsInRange);
     },
-    canMove(data) {
-      if (this.teamColor == "white") {
-        if ((data.start[0] - data.end[0] == 1) | (data.start[0] - data.end[0] == 2))
-          return true;
+    linearDontFly(position, xMax, yMax, _xMax, _yMax) {
+      let start = position;
+      let cellsInRange = [];
+      //mov. en x
+      for (let i = 1; i <= xMax; i++) {
+        if (this.chessboardMatriz[start[1] + i][start[0]].content != "") break; //no puede avanzar al frente si hay una ficha (sin importar bando)
+        cellsInRange.push([start[1] + i, start[0]]);
       }
-      if (this.teamColor == "black") {
-        if ((data.start[0] - data.end[0] == -1) | (data.start[0] - data.end[0] == -2))
-          return true;
+      //mov. en y
+      for (let i = 1; i <= yMax; i++) {
+        if (this.chessboardMatriz[start[1]][start[0] - i].content != "") break;
+        cellsInRange.push([start[1], start[0] - i]);
       }
-      return false;
-    },
-    isFirstMovement(data) {
-      if (Math.abs(data.start[0] - data.end[0]) > 2) return false;
-      if (this.teamColor == "white") {
-        if ((data.start[0] == 6) & (Math.abs(data.start[0] - data.end[0]) == 2))
-          //si esta en la posicion inicial, se puede mover dos casillas
-          return true;
-        if (Math.abs(data.start[0] - data.end[0]) === 1) return true; //sino solo una
+      //mov. en -x
+      for (let i = 1; i <= _xMax; i++) {
+        if (this.chessboardMatriz[start[1] - i][start[0]].content != "") break;
+        cellsInRange.push([start[1] - i, start[0]]);
       }
-      if (this.teamColor == "black") {
-        if ((data.start[0] == 1) & (Math.abs(data.start[0] - data.end[0]) == 2))
-          //si esta en la posicion inicial, se puede mover dos casillas
-          return true;
-        if (Math.abs(data.start[0] - data.end[0]) === 1) return true;
+      //mov. en -y
+      for (let i = 1; i <= _yMax; i++) {
+        if (this.chessboardMatriz[start[1]][start[0] + i].content != "") break;
+        cellsInRange.push([start[1], start[0] + i]);
       }
-      return false;
+      this.$bus.$emit("renderCellsInRange", cellsInRange);
     },
   },
   computed: {
