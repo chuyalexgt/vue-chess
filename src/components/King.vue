@@ -69,7 +69,7 @@ export default {
     },
     diagonalDontFly(position, xyMax, _xyMax, _x_yMax, x_yMax) {
       let start = position;
-      xyMax > 1 ? (xyMax = 1) : null;
+      xyMax > 1 ? (xyMax = 1) : null; //para que solo pueda dar 1 paso max.
       _xyMax > 1 ? (_xyMax = 1) : null;
       _x_yMax > 1 ? (_x_yMax = 1) : null;
       x_yMax > 1 ? (x_yMax = 1) : null;
@@ -114,7 +114,7 @@ export default {
     },
     linearDontFly(position, xMax, yMax, _xMax, _yMax) {
       let start = position;
-      xMax > 1 ? (xMax = 1) : null;
+      xMax > 1 ? (xMax = 1) : null; //para que solo pueda dar 1 paso max.
       yMax > 1 ? (yMax = 1) : null;
       _xMax > 1 ? (_xMax = 1) : null;
       _yMax > 1 ? (_yMax = 1) : null;
