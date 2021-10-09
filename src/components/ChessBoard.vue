@@ -109,12 +109,19 @@ export default {
       coronationDialog: false,
       coronationSelection: "",
       coronationPosition: [],
+      resetGame: true,
     };
   },
   created() {
+    this.$initialPieces.forEach((e) => {
+      this.addPiece(e.row, e.col, e.color, e.piece);
+    });
     this.$bus.$on("renderCellsInRange", (cellsInRange) => {
       cellsInRange.forEach((e) => {
-        this.chessboardMatriz[e[0]][e[1]] = { ...this.chessboardMatriz[e[0]][e[1]], inRange: true };
+        this.chessboardMatriz[e[0]][e[1]] = {
+          ...this.chessboardMatriz[e[0]][e[1]],
+          inRange: true,
+        };
       }, this);
     });
   },
@@ -122,18 +129,7 @@ export default {
     this.$bus.$on("gameStart", () => {
       this.isPieceSelected = false;
       this.turnState = true;
-      this.chessboardMatriz = this.chessboardMatriz.map((e) => {
-        e = e.map((cell) => {
-          cell.content = "";
-          cell.color = "";
-          cell.inRange = false;
-          return cell;
-        });
-        return e;
-      });
-      this.$initialPieces.forEach((e) => {
-        this.addPiece(e.row, e.col, e.color, e.piece);
-      });
+      this.resetGame = !this.resetGame;
     });
     this.$bus.$on(
       "switchSelection",
@@ -168,7 +164,8 @@ export default {
         this.$bus.$emit("positionsToMovePawn", dataToSend);
     });
     this.$bus.$on("executeMovement", (data) => {
-      if (this.movAux) {    //previene que se ejecute varias veces el evento en un solo turno
+      if (this.movAux) {
+        //previene que se ejecute varias veces el evento en un solo turno
         this.movAux = false;
         this.clearRange();
         if (this.chessboardMatriz[data.end[1]][data.end[0]].color != "") {
@@ -242,6 +239,20 @@ export default {
     turnState() {
       this.movAux = true;
     },
+    resetGame() {
+      this.chessboardMatriz = this.chessboardMatriz.map((e) => {
+        e = e.map((cell) => {
+          cell.content = "";
+          cell.color = "";
+          cell.inRange = false;
+          return cell;
+        });
+        return e;
+      });
+      this.$initialPieces.forEach((e) => {
+        this.addPiece(e.row, e.col, e.color, e.piece);
+      });
+    },
   },
   methods: {
     addPiece(row, col, color, piece) {
@@ -277,12 +288,12 @@ export default {
           cell = Object.assign(
             {},
             {
-              content : cell.content,
-              color : cell.color,
-              inRange : false
+              content: cell.content,
+              color: cell.color,
+              inRange: false,
             }
-          )
-          return cell
+          );
+          return cell;
         });
         return e;
       });
