@@ -109,7 +109,7 @@
           </v-col>
           <v-col>
             <v-btn
-              @click="startGame"
+              @click="toHome()"
               class="my-10"
               elevation="10"
               color="brown lighten-3"
@@ -227,6 +227,9 @@ export default {
       setTimeout(() => {
         this.timer();
       }, 1000);
+    },
+    toHome() {
+      location.reload(); //esto es mientras soluciono un bug muuuy cabron
     },
   },
   created() {

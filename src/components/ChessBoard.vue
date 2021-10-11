@@ -97,6 +97,7 @@ export default {
                 content: "",
                 color: "",
                 inRange: false,
+                preScan : false    /////esto es para detectar si el rey esta en jaque
               }
             )
           )
