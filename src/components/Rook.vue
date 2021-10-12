@@ -43,11 +43,14 @@ export default {
         else this.$bus.$emit("invalidMovement");
       }
     });
-    this.$bus.$on("rangeToMoveRook", (position, mode) => {
+    this.$bus.$on("rangeToMoveRook", (position) => {
       if ((position[0] == this.x) & (position[1] == this.y)) {
         //Si es la ficha que seleccionaste...
-        this.linearMovementRange(position, mode);
+        this.linearMovementRange(position);
       }
+    });
+    this.$bus.$on("preRangeOfRook", (position, mode, color) => {
+      if (this.teamColor == color) this.linearMovementRange(position, mode);
     });
   },
   methods: {

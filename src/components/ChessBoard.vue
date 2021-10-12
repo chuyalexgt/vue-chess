@@ -320,18 +320,17 @@ export default {
         this.chessboardMatriz[i].filter((e, index) => {
           if (e.color == team) {
             position = [index, i]; //si es una ficha enemiga, manda a hacer el pre escaneo
-            // if (e.content == "Bishop")
-            //   this.$bus.$emit("rangeToMoveBishop", position, "preScan");
-            // if (e.content == "Knight")
-            //   this.$bus.$emit("rangeToMoveKnight", position, "preScan");
-            // if (e.content == "Queen")
-            //   this.$bus.$emit("rangeToMoveQueen", position, "preScan");
-            // if (e.content == "Rook")
-            //   this.$bus.$emit("rangeToMoveRook", position, "preScan");
-            // if (e.content == "King")
-            //   this.$bus.$emit("rangeToMoveKing", position, "preScan");
+            if (e.content == "Bishop")
+              this.$bus.$emit("preRangeOfBishop", position, "preScan", team);
+            if (e.content == "Knight")
+              this.$bus.$emit("preRangeOfKnight", position, "preScan", team);
+            if (e.content == "Queen")
+              this.$bus.$emit("preRangeOfQueen", position, "preScan", team);
+            if (e.content == "Rook")
+              this.$bus.$emit("preRangeOfRook", position, "preScan", team);
+            if (e.content == "King")
+              this.$bus.$emit("preRangeOfKing", position, "preScan", team);
             if (e.content == "Pawn"){
-              console.log(position)
               this.$bus.$emit("preRangeOfPawn", position, "preScan",team);
             }
           }

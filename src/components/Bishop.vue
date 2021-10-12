@@ -43,11 +43,14 @@ export default {
         else this.$bus.$emit("invalidMovement");
       }
     });
-    this.$bus.$on("rangeToMoveBishop", (position, mode) => {
+    this.$bus.$on("rangeToMoveBishop", (position) => {
       if ((position[0] == this.x) & (position[1] == this.y)) {
         //Si es la ficha que seleccionaste...
-        this.diagonalMovementRange(position, mode);
+        this.diagonalMovementRange(position);
       }
+    });
+    this.$bus.$on("preRangeOfBishop", (position, mode, color) => {
+      if (this.teamColor == color) this.diagonalMovementRange(position, mode);
     });
   },
   methods: {
@@ -120,7 +123,7 @@ export default {
           : cellsInRange.push([start[1] - i, start[0] + i]);
         if (this.chessboardMatriz[start[1] - i][start[0] + i].content != "") break;
       }
-      
+
       mode == "preScan"
         ? this.$bus.$emit("renderCellsInPreRange", cellsInPreRange)
         : this.$bus.$emit("renderCellsInRange", cellsInRange);

@@ -41,11 +41,14 @@ export default {
         else this.$bus.$emit("invalidMovement");
       }
     });
-    this.$bus.$on("rangeToMoveKnight", (position, mode) => {
+    this.$bus.$on("rangeToMoveKnight", (position) => {
       if ((position[0] == this.x) & (position[1] == this.y)) {
         //Si es la ficha que seleccionaste...
-        this.knightMovementRange(position, mode);
+        this.knightMovementRange(position);
       }
+    });
+    this.$bus.$on("preRangeOfKnight", (position, mode, color) => {
+      if (this.teamColor == color) this.knightMovementRange(position, mode);
     });
   },
   methods: {
@@ -64,49 +67,49 @@ export default {
       _yMax > 2 ? (_yMax = 2) : null;
       /// Los 8 movimientos posibles de un caballo
       if ((yMax == 2) & (xMax >= 1)) {
-        (mode == "preScan")? cellsInPreRange.push([start[1] + 1, start[0] + 2]) :null
+        mode == "preScan" ? cellsInPreRange.push([start[1] + 1, start[0] + 2]) : null;
         if (this.chessboardMatriz[start[1] + 1][start[0] + 2].color != this.teamColor) {
           cellsInRange.push([start[1] + 1, start[0] + 2]);
         }
       }
       if ((yMax >= 1) & (xMax == 2)) {
-        (mode == "preScan")? cellsInPreRange.push([start[1] + 2, start[0] + 1]) :null
+        mode == "preScan" ? cellsInPreRange.push([start[1] + 2, start[0] + 1]) : null;
         if (this.chessboardMatriz[start[1] + 2][start[0] + 1].color != this.teamColor) {
           cellsInRange.push([start[1] + 2, start[0] + 1]);
         }
       }
       if ((_yMax >= 1) & (xMax == 2)) {
-        (mode == "preScan")? cellsInPreRange.push([start[1] + 2, start[0] - 1]) :null
+        mode == "preScan" ? cellsInPreRange.push([start[1] + 2, start[0] - 1]) : null;
         if (this.chessboardMatriz[start[1] + 2][start[0] - 1].color != this.teamColor) {
           cellsInRange.push([start[1] + 2, start[0] - 1]);
         }
       }
       if ((_yMax == 2) & (xMax >= 1)) {
-        (mode == "preScan")? cellsInPreRange.push([start[1] + 1, start[0] - 2]) :null
+        mode == "preScan" ? cellsInPreRange.push([start[1] + 1, start[0] - 2]) : null;
         if (this.chessboardMatriz[start[1] + 1][start[0] - 2].color != this.teamColor) {
           cellsInRange.push([start[1] + 1, start[0] - 2]);
         }
       }
       if ((_yMax == 2) & (_xMax >= 1)) {
-        (mode == "preScan")? cellsInPreRange.push([start[1] - 1, start[0] - 2]) :null
+        mode == "preScan" ? cellsInPreRange.push([start[1] - 1, start[0] - 2]) : null;
         if (this.chessboardMatriz[start[1] - 1][start[0] - 2].color != this.teamColor) {
           cellsInRange.push([start[1] - 1, start[0] - 2]);
         }
       }
       if ((_yMax >= 1) & (_xMax == 2)) {
-        (mode == "preScan")? cellsInPreRange.push([start[1] - 2, start[0] - 1]) :null
+        mode == "preScan" ? cellsInPreRange.push([start[1] - 2, start[0] - 1]) : null;
         if (this.chessboardMatriz[start[1] - 2][start[0] - 1].color != this.teamColor) {
           cellsInRange.push([start[1] - 2, start[0] - 1]);
         }
       }
       if ((yMax >= 1) & (_xMax == 2)) {
-        (mode == "preScan")? cellsInPreRange.push([start[1] - 2, start[0] + 1]) :null
+        mode == "preScan" ? cellsInPreRange.push([start[1] - 2, start[0] + 1]) : null;
         if (this.chessboardMatriz[start[1] - 2][start[0] + 1].color != this.teamColor) {
           cellsInRange.push([start[1] - 2, start[0] + 1]);
         }
       }
       if ((yMax == 2) & (_xMax >= 1)) {
-        (mode == "preScan")? cellsInPreRange.push([start[1] - 1, start[0] + 2]) :null
+        mode == "preScan" ? cellsInPreRange.push([start[1] - 1, start[0] + 2]) : null;
         if (this.chessboardMatriz[start[1] - 1][start[0] + 2].color != this.teamColor) {
           cellsInRange.push([start[1] - 1, start[0] + 2]);
         }

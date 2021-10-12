@@ -40,11 +40,17 @@ export default {
           this.$bus.$emit("executeMovement", data);
       }
     });
-    this.$bus.$on("rangeToMoveKing", (position, mode) => {
+    this.$bus.$on("rangeToMoveKing", (position) => {
       if ((position[0] == this.x) & (position[1] == this.y)) {
         //Si es la ficha que seleccionaste...
-        this.linearMovementRange(position, mode);
-        this.diagonalMovementRange(position, mode);
+        this.linearMovementRange(position);
+        this.diagonalMovementRange(position);
+      }
+    });
+    this.$bus.$on("preRangeOfKing", (position, mode, color) => {
+      if (this.teamColor == color){
+        this.linearMovementRange(position,mode);
+        this.diagonalMovementRange(position,mode);
       }
     });
   },
