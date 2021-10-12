@@ -41,16 +41,17 @@ export default {
         else this.$bus.$emit("invalidMovement");
       }
     });
-    this.$bus.$on("rangeToMoveKnight", (position) => {
+    this.$bus.$on("rangeToMoveKnight", (position, mode) => {
       if ((position[0] == this.x) & (position[1] == this.y)) {
         //Si es la ficha que seleccionaste...
-        this.knightMovementRange(position);
+        this.knightMovementRange(position, mode);
       }
     });
   },
   methods: {
-    knightMovementRange(position) {
+    knightMovementRange(position, mode) {
       let cellsInRange = [];
+      let cellsInPreRange = [];
       let start = position;
       ///para determinar cuanto espacio tiene disponible para moverse
       let xMax = Math.abs(position[1] - 7); //➡
@@ -61,50 +62,59 @@ export default {
       yMax > 2 ? (yMax = 2) : null;
       _xMax > 2 ? (_xMax = 2) : null;
       _yMax > 2 ? (_yMax = 2) : null;
-      console.log(start);
-      console.log(xMax, yMax, _xMax, _yMax);
       /// Los 8 movimientos posibles de un caballo
       if ((yMax == 2) & (xMax >= 1)) {
-        this.chessboardMatriz[start[1] + 1][start[0] + 2].color != this.teamColor
-          ? cellsInRange.push([start[1] + 1, start[0] + 2])
-          : null;
+        (mode == "preScan")? cellsInPreRange.push([start[1] + 1, start[0] + 2]) :null
+        if (this.chessboardMatriz[start[1] + 1][start[0] + 2].color != this.teamColor) {
+          cellsInRange.push([start[1] + 1, start[0] + 2]);
+        }
       }
       if ((yMax >= 1) & (xMax == 2)) {
-        this.chessboardMatriz[start[1] + 2][start[0] + 1].color != this.teamColor
-          ? cellsInRange.push([start[1] + 2, start[0] + 1])
-          : null;
+        (mode == "preScan")? cellsInPreRange.push([start[1] + 2, start[0] + 1]) :null
+        if (this.chessboardMatriz[start[1] + 2][start[0] + 1].color != this.teamColor) {
+          cellsInRange.push([start[1] + 2, start[0] + 1]);
+        }
       }
       if ((_yMax >= 1) & (xMax == 2)) {
-        this.chessboardMatriz[start[1] + 2][start[0] - 1].color != this.teamColor
-          ? cellsInRange.push([start[1] + 2, start[0] - 1])
-          : null;
+        (mode == "preScan")? cellsInPreRange.push([start[1] + 2, start[0] - 1]) :null
+        if (this.chessboardMatriz[start[1] + 2][start[0] - 1].color != this.teamColor) {
+          cellsInRange.push([start[1] + 2, start[0] - 1]);
+        }
       }
       if ((_yMax == 2) & (xMax >= 1)) {
-        this.chessboardMatriz[start[1] + 1][start[0] - 2].color != this.teamColor
-          ? cellsInRange.push([start[1] + 1, start[0] - 2])
-          : null;
+        (mode == "preScan")? cellsInPreRange.push([start[1] + 1, start[0] - 2]) :null
+        if (this.chessboardMatriz[start[1] + 1][start[0] - 2].color != this.teamColor) {
+          cellsInRange.push([start[1] + 1, start[0] - 2]);
+        }
       }
       if ((_yMax == 2) & (_xMax >= 1)) {
-        this.chessboardMatriz[start[1] - 1][start[0] - 2].color != this.teamColor
-          ? cellsInRange.push([start[1] - 1, start[0] - 2])
-          : null;
+        (mode == "preScan")? cellsInPreRange.push([start[1] - 1, start[0] - 2]) :null
+        if (this.chessboardMatriz[start[1] - 1][start[0] - 2].color != this.teamColor) {
+          cellsInRange.push([start[1] - 1, start[0] - 2]);
+        }
       }
       if ((_yMax >= 1) & (_xMax == 2)) {
-        this.chessboardMatriz[start[1] - 2][start[0] - 1].color != this.teamColor
-          ? cellsInRange.push([start[1] - 2, start[0] - 1])
-          : null;
+        (mode == "preScan")? cellsInPreRange.push([start[1] - 2, start[0] - 1]) :null
+        if (this.chessboardMatriz[start[1] - 2][start[0] - 1].color != this.teamColor) {
+          cellsInRange.push([start[1] - 2, start[0] - 1]);
+        }
       }
       if ((yMax >= 1) & (_xMax == 2)) {
-        this.chessboardMatriz[start[1] - 2][start[0] + 1].color != this.teamColor
-          ? cellsInRange.push([start[1] - 2, start[0] + 1])
-          : null;
+        (mode == "preScan")? cellsInPreRange.push([start[1] - 2, start[0] + 1]) :null
+        if (this.chessboardMatriz[start[1] - 2][start[0] + 1].color != this.teamColor) {
+          cellsInRange.push([start[1] - 2, start[0] + 1]);
+        }
       }
       if ((yMax == 2) & (_xMax >= 1)) {
-        this.chessboardMatriz[start[1] - 1][start[0] + 2].color != this.teamColor
-          ? cellsInRange.push([start[1] - 1, start[0] + 2])
-          : null;
+        (mode == "preScan")? cellsInPreRange.push([start[1] - 1, start[0] + 2]) :null
+        if (this.chessboardMatriz[start[1] - 1][start[0] + 2].color != this.teamColor) {
+          cellsInRange.push([start[1] - 1, start[0] + 2]);
+        }
       }
-      this.$bus.$emit("renderCellsInRange", cellsInRange);
+
+      mode == "preScan"
+        ? this.$bus.$emit("renderCellsInPreRange", cellsInPreRange)
+        : this.$bus.$emit("renderCellsInRange", cellsInRange);
       /////////////////////////////////////////
     },
   },

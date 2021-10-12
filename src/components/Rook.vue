@@ -43,50 +43,58 @@ export default {
         else this.$bus.$emit("invalidMovement");
       }
     });
-    this.$bus.$on("rangeToMoveRook", (position) => {
+    this.$bus.$on("rangeToMoveRook", (position, mode) => {
       if ((position[0] == this.x) & (position[1] == this.y)) {
         //Si es la ficha que seleccionaste...
-        this.linearMovementRange(position);
+        this.linearMovementRange(position, mode);
       }
     });
   },
   methods: {
-    linearMovementRange(position) {
+    linearMovementRange(position, mode) {
       let xMax, yMax, _xMax, _yMax; //cada variable es la componente vertical/horizontal del plano
       xMax = Math.abs(position[1] - 7); //➡
       yMax = Math.abs(position[0] - 0); //⬆
       _xMax = Math.abs(position[1] - 0); //⬅
       _yMax = Math.abs(position[0] - 7); //⬇
-      this.linearDontFly(position, xMax, yMax, _xMax, _yMax); ///validacion para que no salte otras piezas colorear las casillas a las que se puede mover
+      this.linearDontFly(position, xMax, yMax, _xMax, _yMax, mode); ///validacion para que no salte otras piezas colorear las casillas a las que se puede mover
     },
-    linearDontFly(position, xMax, yMax, _xMax, _yMax) {
+    linearDontFly(position, xMax, yMax, _xMax, _yMax, mode) {
       let start = position;
       let cellsInRange = [];
+      let cellsInPreRange = [];
       //mov. en x
       for (let i = 1; i <= xMax; i++) {
+        mode == "preScan" ? cellsInPreRange.push([start[1] + i, start[0]]) : null;
         if (this.chessboardMatriz[start[1] + i][start[0]].color == this.teamColor) break;
         cellsInRange.push([start[1] + i, start[0]]);
         if (this.chessboardMatriz[start[1] + i][start[0]].content != "") break;
       }
       //mov. en y
       for (let i = 1; i <= yMax; i++) {
+        mode == "preScan" ? cellsInPreRange.push([start[1], start[0] - i]) : null;
         if (this.chessboardMatriz[start[1]][start[0] - i].color == this.teamColor) break;
         cellsInRange.push([start[1], start[0] - i]);
         if (this.chessboardMatriz[start[1]][start[0] - i].content != "") break;
       }
       //mov. en -x
       for (let i = 1; i <= _xMax; i++) {
+        mode == "preScan" ? cellsInPreRange.push([start[1] - i, start[0]]) : null;
         if (this.chessboardMatriz[start[1] - i][start[0]].color == this.teamColor) break;
         cellsInRange.push([start[1] - i, start[0]]);
         if (this.chessboardMatriz[start[1] - i][start[0]].content != "") break;
       }
       //mov. en -y
       for (let i = 1; i <= _yMax; i++) {
+        mode == "preScan" ? cellsInPreRange.push([start[1], start[0] + i]) : null;
         if (this.chessboardMatriz[start[1]][start[0] + i].color == this.teamColor) break;
         cellsInRange.push([start[1], start[0] + i]);
         if (this.chessboardMatriz[start[1]][start[0] + i].content != "") break;
       }
-      this.$bus.$emit("renderCellsInRange", cellsInRange);
+
+      mode == "preScan"
+        ? this.$bus.$emit("renderCellsInPreRange", cellsInPreRange)
+        : this.$bus.$emit("renderCellsInRange", cellsInRange);
     },
   },
   computed: {

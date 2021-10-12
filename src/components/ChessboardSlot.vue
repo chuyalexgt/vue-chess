@@ -11,6 +11,7 @@
         'inRange d-flex justify-center align-center': cell.inRange,
         'enemyInRange d-flex justify-center align-center':
           cell.inRange & (cell.content != ''),
+          'preRange':cell.preScan
       }"
     >
       <Bishop
@@ -18,7 +19,6 @@
         :teamColor="cell.color"
         :x="rowIndex"
         :y="colIndex"
-        :contain="cell"
         :chessboardMatriz="chessboardMatriz"
       />
       <King
@@ -26,7 +26,6 @@
         :teamColor="cell.color"
         :x="rowIndex"
         :y="colIndex"
-        :contain="cell"
         :chessboardMatriz="chessboardMatriz"
       />
       <Knight
@@ -34,7 +33,6 @@
         :teamColor="cell.color"
         :x="rowIndex"
         :y="colIndex"
-        :contain="cell"
         :chessboardMatriz="chessboardMatriz"
       />
       <Pawn
@@ -42,7 +40,6 @@
         :teamColor="cell.color"
         :x="rowIndex"
         :y="colIndex"
-        :contain="cell"
         :chessboardMatriz="chessboardMatriz"
       />
       <Queen
@@ -50,7 +47,6 @@
         :teamColor="cell.color"
         :x="rowIndex"
         :y="colIndex"
-        :contain="cell"
         :chessboardMatriz="chessboardMatriz"
       />
       <Rook
@@ -58,7 +54,6 @@
         :teamColor="cell.color"
         :x="rowIndex"
         :y="colIndex"
-        :contain="cell"
         :chessboardMatriz="chessboardMatriz"
       />
     </div>
@@ -148,5 +143,11 @@ export default {
   height: 100%;
   border: 3px outset #a41c1c;
   background-color: rgba(195, 29, 29, 0.5);
+}
+.preRange {
+  width: 100%;
+  height: 100%;
+  border: 3px outset #1ca423;
+  background-color: rgba(29, 195, 51, 0.5);
 }
 </style>

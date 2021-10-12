@@ -97,7 +97,7 @@ export default {
                 content: "",
                 color: "",
                 inRange: false,
-                preScan : false    /////esto es para detectar si el rey esta en jaque
+                preScan: false, /////esto es para detectar si el rey esta en jaque
               }
             )
           )
@@ -122,6 +122,14 @@ export default {
         this.chessboardMatriz[e[0]][e[1]] = {
           ...this.chessboardMatriz[e[0]][e[1]],
           inRange: true,
+        };
+      }, this);
+    });
+    this.$bus.$on("renderCellsInPreRange", (cellsInPreRange) => {
+      cellsInPreRange.forEach((e) => {
+        this.chessboardMatriz[e[0]][e[1]] = {
+          ...this.chessboardMatriz[e[0]][e[1]],
+          preScan: true,
         };
       }, this);
     });
@@ -184,6 +192,7 @@ export default {
               content: "",
               color: "",
               inRange: false,
+              preScan: false,
             }
           )
         );
@@ -196,6 +205,7 @@ export default {
               content: data.pieceData.content,
               color: data.pieceData.color,
               inRange: false,
+              preScan: false,
             }
           )
         );
@@ -239,6 +249,9 @@ export default {
     },
     turnState() {
       this.movAux = true;
+      let teamToPreScan;
+      this.turnState ? (teamToPreScan = "black") : (teamToPreScan = "white"); ///se hace un pre escaneo del equipo contrario
+      this.initPreScan(teamToPreScan);
     },
     resetGame() {
       this.chessboardMatriz = this.chessboardMatriz.map((e) => {
@@ -246,6 +259,7 @@ export default {
           cell.content = "";
           cell.color = "";
           cell.inRange = false;
+          cell.preScan = false
           return cell;
         });
         return e;
@@ -292,12 +306,37 @@ export default {
               content: cell.content,
               color: cell.color,
               inRange: false,
+              preScan: false,
             }
           );
           return cell;
         });
         return e;
       });
+    },
+    initPreScan(team) {
+      let position = []; //x,y
+      for (let i = 0; i <= 7; i++) {
+        this.chessboardMatriz[i].filter((e, index) => {
+          if (e.color == team) {
+            position = [index, i]; //si es una ficha enemiga, manda a hacer el pre escaneo
+            // if (e.content == "Bishop")
+            //   this.$bus.$emit("rangeToMoveBishop", position, "preScan");
+            // if (e.content == "Knight")
+            //   this.$bus.$emit("rangeToMoveKnight", position, "preScan");
+            // if (e.content == "Queen")
+            //   this.$bus.$emit("rangeToMoveQueen", position, "preScan");
+            // if (e.content == "Rook")
+            //   this.$bus.$emit("rangeToMoveRook", position, "preScan");
+            // if (e.content == "King")
+            //   this.$bus.$emit("rangeToMoveKing", position, "preScan");
+            if (e.content == "Pawn"){
+              console.log(position)
+              this.$bus.$emit("preRangeOfPawn", position, "preScan",team);
+            }
+          }
+        });
+      }
     },
   },
   computed: {
