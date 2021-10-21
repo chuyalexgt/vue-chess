@@ -50,7 +50,8 @@ export default {
       }
     });
     this.$bus.$on("preRangeOfBishop", (position, mode, color) => {
-      if (this.teamColor == color) this.diagonalMovementRange(position, mode);
+      if ((position[0] == this.x) & (position[1] == this.y))
+        this.diagonalMovementRange(position, mode);
     });
   },
   methods: {
@@ -83,7 +84,12 @@ export default {
         )
           break;
         mode == "preScan"
-          ? cellsInPreRange.push([start[1] + i, start[0] + i])
+          ? !(
+              (this.chessboardMatriz[start[1] + i][start[0] + i].content == "King") & //En modo preescaneo no se puede marcar al rey aliado
+              (this.chessboardMatriz[start[1] + i][start[0] + i].color == this.teamColor)
+            )
+            ? cellsInPreRange.push([start[1] + i, start[0] + i])
+            : null
           : cellsInRange.push([start[1] + i, start[0] + i]);
         if (this.chessboardMatriz[start[1] + i][start[0] + i].content != "") break;
       }
@@ -95,7 +101,12 @@ export default {
         )
           break;
         mode == "preScan"
-          ? cellsInPreRange.push([start[1] + i, start[0] - i])
+          ? !(
+              (this.chessboardMatriz[start[1] + i][start[0] - i].content == "King") &
+              (this.chessboardMatriz[start[1] + i][start[0] - i].color == this.teamColor)
+            )
+            ? cellsInPreRange.push([start[1] + i, start[0] - i])
+            : null
           : cellsInRange.push([start[1] + i, start[0] - i]);
         if (this.chessboardMatriz[start[1] + i][start[0] - i].content != "") break;
       }
@@ -107,7 +118,12 @@ export default {
         )
           break;
         mode == "preScan"
-          ? cellsInPreRange.push([start[1] - i, start[0] - i])
+          ? !(
+              (this.chessboardMatriz[start[1] - i][start[0] - i].content == "King") &
+              (this.chessboardMatriz[start[1] - i][start[0] - i].color == this.teamColor)
+            )
+            ? cellsInPreRange.push([start[1] - i, start[0] - i])
+            : null
           : cellsInRange.push([start[1] - i, start[0] - i]);
         if (this.chessboardMatriz[start[1] - i][start[0] - i].content != "") break;
       }
@@ -119,7 +135,12 @@ export default {
         )
           break;
         mode == "preScan"
-          ? cellsInPreRange.push([start[1] - i, start[0] + i])
+          ? !(
+              (this.chessboardMatriz[start[1] - i][start[0] + i].content == "King") &
+              (this.chessboardMatriz[start[1] - i][start[0] + i].color == this.teamColor)
+            )
+            ? cellsInPreRange.push([start[1] - i, start[0] + i])
+            : null
           : cellsInRange.push([start[1] - i, start[0] + i]);
         if (this.chessboardMatriz[start[1] - i][start[0] + i].content != "") break;
       }

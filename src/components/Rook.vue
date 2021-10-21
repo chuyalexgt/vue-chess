@@ -50,7 +50,9 @@ export default {
       }
     });
     this.$bus.$on("preRangeOfRook", (position, mode, color) => {
-      if (this.teamColor == color) this.linearMovementRange(position, mode);
+      if ((position[0] == this.x) & (position[1] == this.y)) {
+        this.linearMovementRange(position, mode);
+      }
     });
   },
   methods: {
@@ -68,30 +70,70 @@ export default {
       let cellsInPreRange = [];
       //mov. en x
       for (let i = 1; i <= xMax; i++) {
-        mode == "preScan" ? cellsInPreRange.push([start[1] + i, start[0]]) : null;
-        if (this.chessboardMatriz[start[1] + i][start[0]].color == this.teamColor) break;
-        cellsInRange.push([start[1] + i, start[0]]);
+        if (
+          (this.chessboardMatriz[start[1] + i][start[0]].color == this.teamColor) &
+          (mode != "preScan")
+        )
+          break;
+        mode == "preScan"
+          ? !(
+              (this.chessboardMatriz[start[1] + i][start[0]].color == this.teamColor) & //En modo preescaneo no se puede marcar al rey aliado
+              (this.chessboardMatriz[start[1] + i][start[0]].content == "King")
+            )
+            ? cellsInPreRange.push([start[1] + i, start[0]])
+            : null
+          : cellsInRange.push([start[1] + i, start[0]]);
         if (this.chessboardMatriz[start[1] + i][start[0]].content != "") break;
       }
       //mov. en y
       for (let i = 1; i <= yMax; i++) {
-        mode == "preScan" ? cellsInPreRange.push([start[1], start[0] - i]) : null;
-        if (this.chessboardMatriz[start[1]][start[0] - i].color == this.teamColor) break;
-        cellsInRange.push([start[1], start[0] - i]);
+        if (
+          (this.chessboardMatriz[start[1]][start[0] - i].color == this.teamColor) &
+          (mode != "preScan")
+        )
+          break;
+        mode == "preScan"
+          ? !(
+              (this.chessboardMatriz[start[1]][start[0] - i].color == this.teamColor) & //En modo preescaneo no se puede marcar al rey aliado
+              (this.chessboardMatriz[start[1]][start[0] - i].content == "King")
+            )
+            ? cellsInPreRange.push([start[1], start[0] - i])
+            : null
+          : cellsInRange.push([start[1], start[0] - i]);
         if (this.chessboardMatriz[start[1]][start[0] - i].content != "") break;
       }
       //mov. en -x
       for (let i = 1; i <= _xMax; i++) {
-        mode == "preScan" ? cellsInPreRange.push([start[1] - i, start[0]]) : null;
-        if (this.chessboardMatriz[start[1] - i][start[0]].color == this.teamColor) break;
-        cellsInRange.push([start[1] - i, start[0]]);
+        if (
+          (this.chessboardMatriz[start[1] - i][start[0]].color == this.teamColor) &
+          (mode != "preScan")
+        )
+          break;
+        mode == "preScan"
+          ? !(
+              (this.chessboardMatriz[start[1] - i][start[0]].color == this.teamColor) & //En modo preescaneo no se puede marcar al rey aliado
+              (this.chessboardMatriz[start[1] - i][start[0]].content == "King")
+            )
+            ? cellsInPreRange.push([start[1] - i, start[0]])
+            : null
+          : cellsInRange.push([start[1] - i, start[0]]);
         if (this.chessboardMatriz[start[1] - i][start[0]].content != "") break;
       }
       //mov. en -y
       for (let i = 1; i <= _yMax; i++) {
-        mode == "preScan" ? cellsInPreRange.push([start[1], start[0] + i]) : null;
-        if (this.chessboardMatriz[start[1]][start[0] + i].color == this.teamColor) break;
-        cellsInRange.push([start[1], start[0] + i]);
+        if (
+          (this.chessboardMatriz[start[1]][start[0] + i].color == this.teamColor) &
+          (mode != "preScan")
+        )
+          break;
+        mode == "preScan"
+          ? !(
+              (this.chessboardMatriz[start[1]][start[0] + i].color == this.teamColor) & //En modo preescaneo no se puede marcar al rey aliado
+              (this.chessboardMatriz[start[1]][start[0] + i].content == "King")
+            )
+            ? cellsInPreRange.push([start[1], start[0] + i])
+            : null
+          : cellsInRange.push([start[1], start[0] + i]);
         if (this.chessboardMatriz[start[1]][start[0] + i].content != "") break;
       }
 

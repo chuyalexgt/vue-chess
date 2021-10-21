@@ -48,7 +48,8 @@ export default {
       }
     });
     this.$bus.$on("preRangeOfKnight", (position, mode, color) => {
-      if (this.teamColor == color) this.knightMovementRange(position, mode);
+      if ((position[0] == this.x) & (position[1] == this.y))
+        this.knightMovementRange(position, mode);
     });
   },
   methods: {
@@ -67,49 +68,113 @@ export default {
       _yMax > 2 ? (_yMax = 2) : null;
       /// Los 8 movimientos posibles de un caballo
       if ((yMax == 2) & (xMax >= 1)) {
-        mode == "preScan" ? cellsInPreRange.push([start[1] + 1, start[0] + 2]) : null;
+        mode == "preScan"
+          ? !(
+              (this.chessboardMatriz[start[1] + 1][start[0] + 2].color ==
+                this.teamColor) & //En modo preescaneo no se puede marcar al rey aliado
+              (this.chessboardMatriz[start[1] + 1][start[0] + 2].content == "King")
+            )
+            ? cellsInPreRange.push([start[1] + 1, start[0] + 2])
+            : null
+          : null;
         if (this.chessboardMatriz[start[1] + 1][start[0] + 2].color != this.teamColor) {
           cellsInRange.push([start[1] + 1, start[0] + 2]);
         }
       }
       if ((yMax >= 1) & (xMax == 2)) {
-        mode == "preScan" ? cellsInPreRange.push([start[1] + 2, start[0] + 1]) : null;
+        mode == "preScan"
+          ? !(
+              (this.chessboardMatriz[start[1] + 2][start[0] + 1].color ==
+                this.teamColor) & //En modo preescaneo no se puede marcar al rey aliado
+              (this.chessboardMatriz[start[1] + 2][start[0] + 1].content == "King")
+            )
+            ? cellsInPreRange.push([start[1] + 2, start[0] + 1])
+            : null
+          : null;
         if (this.chessboardMatriz[start[1] + 2][start[0] + 1].color != this.teamColor) {
           cellsInRange.push([start[1] + 2, start[0] + 1]);
         }
       }
       if ((_yMax >= 1) & (xMax == 2)) {
-        mode == "preScan" ? cellsInPreRange.push([start[1] + 2, start[0] - 1]) : null;
+        mode == "preScan"
+          ? !(
+              (this.chessboardMatriz[start[1] + 2][start[0] - 1].color ==
+                this.teamColor) & //En modo preescaneo no se puede marcar al rey aliado
+              (this.chessboardMatriz[start[1] + 2][start[0] - 1].content == "King")
+            )
+            ? cellsInPreRange.push([start[1] + 2, start[0] - 1])
+            : null
+          : null;
         if (this.chessboardMatriz[start[1] + 2][start[0] - 1].color != this.teamColor) {
           cellsInRange.push([start[1] + 2, start[0] - 1]);
         }
       }
       if ((_yMax == 2) & (xMax >= 1)) {
-        mode == "preScan" ? cellsInPreRange.push([start[1] + 1, start[0] - 2]) : null;
+        mode == "preScan"
+          ? !(
+              (this.chessboardMatriz[start[1] + 1][start[0] - 2].color ==
+                this.teamColor) & //En modo preescaneo no se puede marcar al rey aliado
+              (this.chessboardMatriz[start[1] + 1][start[0] - 2].content == "King")
+            )
+            ? cellsInPreRange.push([start[1] + 1, start[0] - 2])
+            : null
+          : null;
         if (this.chessboardMatriz[start[1] + 1][start[0] - 2].color != this.teamColor) {
           cellsInRange.push([start[1] + 1, start[0] - 2]);
         }
       }
       if ((_yMax == 2) & (_xMax >= 1)) {
-        mode == "preScan" ? cellsInPreRange.push([start[1] - 1, start[0] - 2]) : null;
+        mode == "preScan"
+          ? !(
+              (this.chessboardMatriz[start[1] - 1][start[0] - 2].color ==
+                this.teamColor) & //En modo preescaneo no se puede marcar al rey aliado
+              (this.chessboardMatriz[start[1] - 1][start[0] - 2].content == "King")
+            )
+            ? cellsInPreRange.push([start[1] - 1, start[0] - 2])
+            : null
+          : null;
         if (this.chessboardMatriz[start[1] - 1][start[0] - 2].color != this.teamColor) {
           cellsInRange.push([start[1] - 1, start[0] - 2]);
         }
       }
       if ((_yMax >= 1) & (_xMax == 2)) {
-        mode == "preScan" ? cellsInPreRange.push([start[1] - 2, start[0] - 1]) : null;
+        mode == "preScan"
+          ? !(
+              (this.chessboardMatriz[start[1] - 2][start[0] - 1].color ==
+                this.teamColor) & //En modo preescaneo no se puede marcar al rey aliado
+              (this.chessboardMatriz[start[1] - 2][start[0] - 1].content == "King")
+            )
+            ? cellsInPreRange.push([start[1] - 2, start[0] - 1])
+            : null
+          : null;
         if (this.chessboardMatriz[start[1] - 2][start[0] - 1].color != this.teamColor) {
           cellsInRange.push([start[1] - 2, start[0] - 1]);
         }
       }
       if ((yMax >= 1) & (_xMax == 2)) {
-        mode == "preScan" ? cellsInPreRange.push([start[1] - 2, start[0] + 1]) : null;
+        mode == "preScan"
+          ? !(
+              (this.chessboardMatriz[start[1] - 2][start[0] + 1].color ==
+                this.teamColor) & //En modo preescaneo no se puede marcar al rey aliado
+              (this.chessboardMatriz[start[1] - 2][start[0] + 1].content == "King")
+            )
+            ? cellsInPreRange.push([start[1] - 2, start[0] + 1])
+            : null
+          : null;
         if (this.chessboardMatriz[start[1] - 2][start[0] + 1].color != this.teamColor) {
           cellsInRange.push([start[1] - 2, start[0] + 1]);
         }
       }
       if ((yMax == 2) & (_xMax >= 1)) {
-        mode == "preScan" ? cellsInPreRange.push([start[1] - 1, start[0] + 2]) : null;
+        mode == "preScan"
+          ? !(
+              (this.chessboardMatriz[start[1] - 1][start[0] + 2].color ==
+                this.teamColor) & //En modo preescaneo no se puede marcar al rey aliado
+              (this.chessboardMatriz[start[1] - 1][start[0] + 2].content == "King")
+            )
+            ? cellsInPreRange.push([start[1] - 1, start[0] + 2])
+            : null
+          : null;
         if (this.chessboardMatriz[start[1] - 1][start[0] + 2].color != this.teamColor) {
           cellsInRange.push([start[1] - 1, start[0] + 2]);
         }

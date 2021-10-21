@@ -227,6 +227,7 @@ export default {
       this.coronationDialog = true;
     });
     this.$bus.$on("invalidMovement", this.clearRange);
+    this.$bus.$on("preScan",this.initPreScan)
   },
   props: {},
   watch: {
@@ -249,9 +250,7 @@ export default {
     },
     turnState() {
       this.movAux = true;
-      let teamToPreScan;
-      this.turnState ? (teamToPreScan = "black") : (teamToPreScan = "white"); ///se hace un pre escaneo del equipo contrario
-      this.initPreScan(teamToPreScan);
+      this.clearPreRange();
     },
     resetGame() {
       this.chessboardMatriz = this.chessboardMatriz.map((e) => {
@@ -259,7 +258,7 @@ export default {
           cell.content = "";
           cell.color = "";
           cell.inRange = false;
-          cell.preScan = false
+          cell.preScan = false;
           return cell;
         });
         return e;
@@ -306,6 +305,23 @@ export default {
               content: cell.content,
               color: cell.color,
               inRange: false,
+              preScan: cell.preScan,
+            }
+          );
+          return cell;
+        });
+        return e;
+      });
+    },
+    clearPreRange() {
+      this.chessboardMatriz = this.chessboardMatriz.map((e) => {
+        e = e.map((cell) => {
+          cell = Object.assign(
+            {},
+            {
+              content: cell.content,
+              color: cell.color,
+              inRange: false,
               preScan: false,
             }
           );
@@ -314,7 +330,9 @@ export default {
         return e;
       });
     },
-    initPreScan(team) {
+    initPreScan() {
+      let team;
+      this.turnState ? (team = "black") : (team = "white"); ///se hace un pre escaneo del equipo contrario
       let position = []; //x,y
       for (let i = 0; i <= 7; i++) {
         this.chessboardMatriz[i].filter((e, index) => {
@@ -330,9 +348,8 @@ export default {
               this.$bus.$emit("preRangeOfRook", position, "preScan", team);
             if (e.content == "King")
               this.$bus.$emit("preRangeOfKing", position, "preScan", team);
-            if (e.content == "Pawn"){
-              this.$bus.$emit("preRangeOfPawn", position, "preScan",team);
-            }
+            if (e.content == "Pawn")
+              this.$bus.$emit("preRangeOfPawn", position, "preScan", team);
           }
         });
       }

@@ -36,8 +36,12 @@ export default {
       //movimiento de reina
       if ((data.start[0] == this.x) & (data.start[1] == this.y)) {
         //Si es la ficha que seleccionaste y la casilla a la que se quiere mover esta dentro del rango, ejecuta el movimiento
-        if (this.chessboardMatriz[data.end[1]][data.end[0]].inRange)
+        if (
+          this.chessboardMatriz[data.end[1]][data.end[0]].inRange &
+          !this.chessboardMatriz[data.end[1]][data.end[0]].preScan
+        )
           this.$bus.$emit("executeMovement", data);
+        else this.$bus.$emit("invalidMovement"); 
       }
     });
     this.$bus.$on("rangeToMoveKing", (position) => {
@@ -48,9 +52,9 @@ export default {
       }
     });
     this.$bus.$on("preRangeOfKing", (position, mode, color) => {
-      if (this.teamColor == color){
-        this.linearMovementRange(position,mode);
-        this.diagonalMovementRange(position,mode);
+      if ((position[0] == this.x) & (position[1] == this.y)) {
+        this.linearMovementRange(position, mode);
+        this.diagonalMovementRange(position, mode);
       }
     });
   },
@@ -133,7 +137,7 @@ export default {
       yMax = Math.abs(position[0] - 0); //⬆
       _xMax = Math.abs(position[1] - 0); //⬅
       _yMax = Math.abs(position[0] - 7); //⬇
-      this.linearDontFly(position, xMax, yMax, _xMax, _yMax); ///validacion para que no salte otras piezas colorear las casillas a las que se puede mover
+      this.linearDontFly(position, xMax, yMax, _xMax, _yMax, mode); ///validacion para que no salte otras piezas colorear las casillas a las que se puede mover
     },
     linearDontFly(position, xMax, yMax, _xMax, _yMax, mode) {
       let start = position;
@@ -151,7 +155,7 @@ export default {
           this.chessboardMatriz[start[1] + i][start[0]].preScan
         )
           break;
-        cellsInRange.push([start[1] + i, start[0]]);
+        mode != "preScan" ? cellsInRange.push([start[1] + i, start[0]]) : null;
         if (this.chessboardMatriz[start[1] + i][start[0]].content != "") break;
       }
       //mov. en y
@@ -162,7 +166,7 @@ export default {
           this.chessboardMatriz[start[1]][start[0] - i].preScan
         )
           break;
-        cellsInRange.push([start[1], start[0] - i]);
+        mode != "preScan" ? cellsInRange.push([start[1], start[0] - i]) : null;
         if (this.chessboardMatriz[start[1]][start[0] - i].content != "") break;
       }
       //mov. en -x
@@ -173,7 +177,7 @@ export default {
           this.chessboardMatriz[start[1] - i][start[0]].preScan
         )
           break;
-        cellsInRange.push([start[1] - i, start[0]]);
+        mode != "preScan" ? cellsInRange.push([start[1] - i, start[0]]) : null;
         if (this.chessboardMatriz[start[1] - i][start[0]].content != "") break;
       }
       //mov. en -y
@@ -184,7 +188,7 @@ export default {
           this.chessboardMatriz[start[1]][start[0] + i].preScan
         )
           break;
-        cellsInRange.push([start[1], start[0] + i]);
+        mode != "preScan" ? cellsInRange.push([start[1], start[0] + i]) : null;
         if (this.chessboardMatriz[start[1]][start[0] + i].content != "") break;
       }
       mode == "preScan"
