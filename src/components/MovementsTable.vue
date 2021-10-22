@@ -40,7 +40,7 @@
 <script>
 export default {
   name: "MovementsTable",
-  created() {},
+
   data() {
     return {};
   },

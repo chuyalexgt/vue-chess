@@ -164,7 +164,7 @@ export default {
         case "sm":
           return "flex-column";
         case "md":
-          return "flex-column";
+          return "flex-row";
         case "lg":
           return "flex-row";
         case "xl":
@@ -212,6 +212,7 @@ export default {
       }
     });
     this.$bus.$on("addToCaptured", (data) => {
+
       if (this.capturedListState) {
         this.capturedListState = false;
         if (data.color == "white") this.whiteCaptured.push(data);

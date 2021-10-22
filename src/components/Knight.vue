@@ -31,7 +31,7 @@ export default {
       require: true,
     },
   },
-  created() {
+  beforeCreate() {
     this.$bus.$on("positionsToMoveKnight", (data) => {
       //movimiento de arfil
       if ((data.start[0] == this.x) & (data.start[1] == this.y)) {

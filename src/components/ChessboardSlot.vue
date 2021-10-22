@@ -11,8 +11,7 @@
         'inRange d-flex justify-center align-center': cell.inRange,
         'enemyInRange d-flex justify-center align-center':
           cell.inRange & (cell.content != ''),
-        'preScan': cell.preScan
-      }"
+      }" 
     >
       <Bishop
         v-if="cell.content === 'Bishop'"
@@ -27,7 +26,7 @@
         :x="rowIndex"
         :y="colIndex"
         :chessboardMatriz="chessboardMatriz"
-        :class="{'jaque':cell.preScan}"
+        :class="{ 'jaque d-flex justify-center align-center': cell.preScan }"
       />
       <Knight
         v-if="cell.content === 'Knight'"
@@ -92,7 +91,7 @@ export default {
           return;
         }
         if (this.cell.content === "") return; //Evita el movimiento de una celda sin pieza
-        this.$bus.$emit("preScan")
+        this.$bus.$emit("preScan");
         this.multiBus();
         this.$bus.$emit("piecePosition", {
           position: [this.rowIndex, this.colIndex],
@@ -146,13 +145,13 @@ export default {
   border: 3px outset #a41c1c;
   background-color: rgba(195, 29, 29, 0.5);
 }
-.preScan{
+.preScan {
   width: 100%;
   height: 100%;
   border: 3px outset #1ca439;
   background-color: rgba(29, 195, 29, 0.5);
 }
-.jaque{
+.jaque {
   width: 100%;
   height: 100%;
   border: 3px inset #a41c1c;

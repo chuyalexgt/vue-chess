@@ -35,7 +35,7 @@
       </v-card>
     </v-card>
     <v-card width="100%" class="d-flex flex-row flex-nowrap justify-end">
-      <v-card  width="5%" color="brown lighten-3" flat tile> </v-card>
+      <v-card width="5%" color="brown lighten-3" flat tile> </v-card>
       <v-card
         width="12.5%"
         color="brown lighten-3"
@@ -140,8 +140,8 @@ export default {
       coronationSelection: "",
       coronationPosition: [],
       resetGame: true,
-      letters: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
-      colNumbers : [8,7,6,5,4,3,2,1]
+      letters: ["A", "B", "C", "D", "E", "F", "G", "H"],
+      colNumbers: [8, 7, 6, 5, 4, 3, 2, 1],
     };
   },
   created() {
@@ -164,6 +164,7 @@ export default {
         };
       }, this);
     });
+    this.$bus.$on("preScan", this.initPreScan);
   },
   mounted() {
     this.$bus.$on("gameStart", () => {
@@ -214,32 +215,41 @@ export default {
             color: this.chessboardMatriz[data.end[1]][data.end[0]].color,
           });
         }
-        this.chessboardMatriz[data.start[1]].splice(
-          data.start[0],
-          1,
-          Object.assign(
-            {},
-            {
-              content: "",
-              color: "",
-              inRange: false,
-              preScan: false,
-            }
-          )
-        );
-        this.chessboardMatriz[data.end[1]].splice(
-          data.end[0],
-          1,
-          Object.assign(
-            {},
-            {
-              content: data.pieceData.content,
-              color: data.pieceData.color,
-              inRange: false,
-              preScan: false,
-            }
-          )
-        );
+        this.chessboardMatriz[data.start[1]][data.start[0]].content = "";
+        this.chessboardMatriz[data.start[1]][data.start[0]].color = "";
+        this.chessboardMatriz[data.start[1]][data.start[0]].inRange = false;
+        this.chessboardMatriz[data.start[1]][data.start[0]].preScan = false;
+
+        this.chessboardMatriz[data.end[1]][data.end[0]].content = data.pieceData.content;
+        this.chessboardMatriz[data.end[1]][data.end[0]].color = data.pieceData.color;
+        this.chessboardMatriz[data.end[1]][data.end[0]].inRange = false;
+        this.chessboardMatriz[data.end[1]][data.end[0]].preScan = false;
+        // this.chessboardMatriz[data.start[1]].splice(
+        //   data.start[0],
+        //   1,
+        //   Object.assign(
+        //     {},
+        //     {
+        //       content: "",
+        //       color: "",
+        //       inRange: false,
+        //       preScan: false,
+        //     }
+        //   )
+        // );
+        // this.chessboardMatriz[data.end[1]].splice(
+        //   data.end[0],
+        //   1,
+        //   Object.assign(
+        //     {},
+        //     {
+        //       content: data.pieceData.content,
+        //       color: data.pieceData.color,
+        //       inRange: false,
+        //       preScan: false,
+        //     }
+        //   )
+        // );
         this.piecePosition = [];
         this.pieceData = {};
         this.positionToMove = [];
@@ -258,9 +268,7 @@ export default {
       this.coronationDialog = true;
     });
     this.$bus.$on("invalidMovement", this.clearRange);
-    this.$bus.$on("preScan", this.initPreScan);
   },
-  props: {},
   watch: {
     chessboardMatriz: {
       handler(val) {
@@ -390,15 +398,15 @@ export default {
     width() {
       switch (this.$vuetify.breakpoint.name) {
         case "xs":
-          return "97vw";
+          return "95vw";
         case "sm":
-          return "62vw";
+          return "75vw";
         case "md":
-          return "42vw";
+          return "45vw";
         case "lg":
-          return "42vw";
+          return "40vw";
         case "xl":
-          return "42vw";
+          return "40vw";
       }
     },
   },

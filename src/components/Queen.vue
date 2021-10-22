@@ -31,7 +31,7 @@ export default {
       require: true,
     },
   },
-  created() {
+  beforeCreate() {
     this.$bus.$on("positionsToMoveQueen", (data) => {
       //movimiento de reina
       if ((data.start[0] == this.x) & (data.start[1] == this.y)) {
