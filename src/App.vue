@@ -23,6 +23,7 @@
         </v-card-text>
         <v-card-actions class="d-flex justify-center align-center">
           <v-btn
+            v-if="showStartMenu"
             @click="startGame"
             class="my-10 pa-5"
             elevation="10"
@@ -30,6 +31,16 @@
             rounded
             large
             >Iniciar Partida</v-btn
+          >
+          <v-btn
+            v-if="showGameOver"
+            @click="toHome()"
+            class="my-10 pa-5"
+            elevation="10"
+            color="brown lighten-3"
+            rounded
+            large
+            >Regresar al menu</v-btn
           >
         </v-card-actions>
       </v-card>
@@ -66,41 +77,7 @@
         </v-row>
         <v-row>
           <v-col>
-            <v-banner :width="width" elevation="3">
-              <v-expansion-panels accordion>
-                <v-expansion-panel>
-                  <v-expansion-panel-header color="brown lighten-3"
-                    >Movimientos</v-expansion-panel-header
-                  >
-                  <v-expansion-panel-content
-                    class="pt-4 | scroll"
-                    color="brown lighten-5"
-                  >
-                    <v-banner
-                      single-line
-                      v-for="(m, index) in movementsList"
-                      :key="index"
-                      color="brown lighten-4"
-                    >
-                      <v-row>
-                        <v-col class="d-flex justify-center align-center">
-                          <v-icon :color="m.pieceData.color" x-large>{{
-                            defineIcon(m.pieceData.content)
-                          }}</v-icon>
-                        </v-col>
-                        <v-col>
-                          <p>Pieza: {{ m.pieceData.content }}</p>
-                          <p>
-                            Pos. Inicial: {{ `Row - ${m.start[0]}  Col - ${m.start[1]}` }}
-                          </p>
-                          <p>Pos. Final: {{ `Row - ${m.end[0]}  Col - ${m.end[1]}` }}</p>
-                        </v-col>
-                      </v-row>
-                    </v-banner>
-                  </v-expansion-panel-content>
-                </v-expansion-panel>
-              </v-expansion-panels>
-            </v-banner>
+            <MovementsTable :movements="movementsList" />
           </v-col>
         </v-row>
         <v-row class="d-flex justify-center">
@@ -208,14 +185,6 @@ export default {
       this.whiteCaptured = [];
       this.blackCaptured = [];
     },
-    defineIcon(type) {
-      if (type == "Pawn") return "mdi-chess-pawn";
-      if (type == "Bishop") return "mdi-chess-bishop";
-      if (type == "Knight") return "mdi-chess-knight";
-      if (type == "King") return "mdi-chess-king";
-      if (type == "Queen") return "mdi-chess-queen";
-      if (type == "Rook") return "mdi-chess-rook";
-    },
     timer() {
       if (this.seconds + 1 == 60) {
         this.minutes++;
@@ -229,7 +198,7 @@ export default {
       }, 1000);
     },
     toHome() {
-      location.reload(); //esto es mientras soluciono un bug muuuy cabron
+      location.reload();
     },
   },
   created() {

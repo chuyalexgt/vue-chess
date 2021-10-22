@@ -1,12 +1,27 @@
 <template>
-  <v-card class="d-flex justify-center align-center">
+  <v-card class="d-flex justify-center align-center flex-column">
     <v-card
       :width="width"
       :height="width"
       color="brown lighten-4"
       class="d-flex justify-space-around"
     >
-      <v-card v-for="(c, index) in this.chessboardMatriz" :key="index" width="12.5%">
+      <v-card width="5%" class="d-flex flex-column flex-nowrap">
+        <v-card
+          height="12.5%"
+          width="100%"
+          color="brown lighten-3"
+          flat
+          tile
+          class="d-flex justify-center align-center"
+          v-for="(c, index) in colNumbers"
+          :key="`${index}l`"
+        >
+          {{ c }}
+        </v-card>
+      </v-card>
+
+      <v-card v-for="(c, index) in chessboardMatriz" :key="index" width="12.5%">
         <ChessboardSlot
           v-for="(cell, index2) in c"
           :key="index2"
@@ -17,6 +32,20 @@
           :chessboardMatriz="chessboardMatriz"
           :turnState="turnState"
         />
+      </v-card>
+    </v-card>
+    <v-card width="100%" class="d-flex flex-row flex-nowrap justify-end">
+      <v-card  width="5%" color="brown lighten-3" flat tile> </v-card>
+      <v-card
+        width="12.5%"
+        color="brown lighten-3"
+        flat
+        tile
+        class="d-flex justify-center align-center"
+        v-for="(l, index) in letters"
+        :key="`${index}l`"
+      >
+        {{ l }}
       </v-card>
     </v-card>
     <v-dialog transition="dialog-bottom-transition" :value="coronationDialog" persistent>
@@ -111,6 +140,8 @@ export default {
       coronationSelection: "",
       coronationPosition: [],
       resetGame: true,
+      letters: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
+      colNumbers : [8,7,6,5,4,3,2,1]
     };
   },
   created() {
@@ -227,7 +258,7 @@ export default {
       this.coronationDialog = true;
     });
     this.$bus.$on("invalidMovement", this.clearRange);
-    this.$bus.$on("preScan",this.initPreScan)
+    this.$bus.$on("preScan", this.initPreScan);
   },
   props: {},
   watch: {
@@ -359,15 +390,15 @@ export default {
     width() {
       switch (this.$vuetify.breakpoint.name) {
         case "xs":
-          return "95vw";
+          return "97vw";
         case "sm":
-          return "60vw";
+          return "62vw";
         case "md":
-          return "40vw";
+          return "42vw";
         case "lg":
-          return "40vw";
+          return "42vw";
         case "xl":
-          return "40vw";
+          return "42vw";
       }
     },
   },

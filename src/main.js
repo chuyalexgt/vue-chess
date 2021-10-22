@@ -16,6 +16,7 @@ import ChessboardSlot from "./components/ChessboardSlot"
 import chessboardDinamics from "./plugins/chessboard-dinamics"
 import PlayerTurnIndicator from "./components/PlayerTurnIndicator"
 import CapturedPieces from "./components/CapturedPieces"
+import MovementsTable from "./components/MovementsTable"
 
 Vue.component("Bishop",Bishop)
 Vue.component("King",King)
@@ -27,6 +28,7 @@ Vue.component("ChessBoard",ChessBoard)
 Vue.component("ChessboardSlot",ChessboardSlot)
 Vue.component("PlayerTurnIndicator",PlayerTurnIndicator)
 Vue.component("CapturedPieces",CapturedPieces)
+Vue.component("MovementsTable",MovementsTable)
 
 Vue.use(chessboardDinamics)
 
